@@ -1,26 +1,146 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: #EEF1EC;
+  --color-foreground: #0B1F16;
+  --color-canvas: #EEF1EC;
+  --color-surface: #FFFFFF;
+  --color-border: #E2E8DF;
+  --color-sage: #559E7B;
+  --color-sage-dark: #3F8263;
+  --color-mint: #DCEADF;
+  --color-ink: #0B1F16;
+  --color-muted: #5D6B61;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+
+  /* Smoothing global: semua transisi/hover pakai easing & durasi yang sama */
+  --default-transition-duration: 320ms;
+  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Loading spinner lebih halus & hidup */
+  --animate-spin: spin 0.9s linear infinite;
+  --animate-pulse: pulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  /* Token animasi baru */
+  --animate-shimmer: shimmer 2.2s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.5s ease-out both;
+  --animate-fade-in-up: fade-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-scale-in: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  /* Landing — marquee ticker */
+  --animate-marquee: marquee 36s linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% { background-position: 150% 0; }
+  100% { background-position: -150% 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Landing — grain halus untuk area gelap (depth tekstur) */
+.bg-grain { position: relative; }
+.bg-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+* { box-sizing: border-box; }
+
+/* Skeleton shimmer block — pakai rounded-* via className utility */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(100deg, #E4EAE6 30%, #F4F7F4 50%, #E4EAE6 70%);
+  background-size: 400% 100%;
+  animation: shimmer 2.2s ease-in-out infinite;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: sweep 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes sweep {
+  0% { transform: translateX(-100%); }
+  55%, 100% { transform: translateX(100%); }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.65;
+}
+
+@layer base {
+  input, textarea, select { color: var(--color-ink); }
+}
+
+::placeholder { color: var(--color-muted); opacity: 0.6; }
+select option { color: var(--color-ink); }
+select option[value=""] { color: var(--color-muted); }
+
+:focus-visible {
+  outline: 3px solid var(--color-sage);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Reduced motion — berlaku untuk seluruh aplikasi, KECUALI landing (main[data-landing]) yang selalu animasi penuh */
+@media (prefers-reduced-motion: reduce) {
+  *:not(main[data-landing]):not(main[data-landing] *) {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  /* Pengecualian: feedback loading tetap animasi dengan durasi normalnya */
+  .animate-spin {
+    animation-duration: 0.9s !important;
+  }
+  .animate-pulse {
+    animation-duration: 2.4s !important;
+  }
+  .skeleton,
+  .skeleton::after {
+    animation-duration: 2.2s !important;
+  }
 }

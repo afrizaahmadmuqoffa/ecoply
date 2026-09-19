@@ -32,6 +32,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# Supabase
+supabase/.branches
+supabase/.temp
 
 # vercel
 .vercel
@@ -39,3 +44,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dokumen tidak penting (planning/test)
+sustainability-report-2025-unilever.pdf
+rag_compliance.md
+prd.txt
+frontend_admin.md
+frontend_auth.md
+frontend_company.md
+frontend_dashboard.md
+ECOPLY-AI-Build-Plan (2).md
+security/audit-report.md
+README.md

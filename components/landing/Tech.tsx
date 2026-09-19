@@ -1,0 +1,99 @@
+'use client'
+
+import { motion } from 'motion/react'
+import { Sparkles } from 'lucide-react'
+import Eyebrow from './Eyebrow'
+import Reveal from './Reveal'
+
+const chips = ['Multi-dokumen', 'Real-time']
+
+const orbitDots = [
+  { top: -4, left: '50%', translate: '-50%', delay: 0 },
+  { top: '50%', left: -4, translate: '-50%', delay: 1 },
+  { top: '50%', left: '100%', translate: '-50%', delay: 2 },
+  { top: '100%', left: '50%', translate: '-50%', delay: 3 },
+]
+
+export default function Tech() {
+  return (
+    <section
+      id="teknologi"
+      className="bg-grain relative scroll-mt-24 overflow-hidden bg-ink py-24 text-white sm:py-32"
+    >
+      {/* Aurora */}
+      <motion.div
+        className="pointer-events-none absolute right-[-15%] top-[-20%] h-[30rem] w-[30rem] rounded-full bg-sage/20 blur-[140px]"
+        animate={{ x: [0, -60, 0], y: [0, 50, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+        aria-hidden
+      />
+      <motion.div
+        className="pointer-events-none absolute bottom-[-25%] left-[-10%] h-[26rem] w-[26rem] rounded-full bg-mint/10 blur-[140px]"
+        animate={{ x: [0, 50, 0], y: [0, -40, 0] }}
+        transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut' }}
+        aria-hidden
+      />
+
+      <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
+        {/* Orbit abstrak */}
+        <Reveal>
+          <div className="relative mx-auto mb-10 h-24 w-24">
+            <span className="absolute inset-0 rounded-full border border-white/15" aria-hidden />
+            <motion.div
+              className="absolute inset-0"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
+              aria-hidden
+            >
+              {orbitDots.map((dot) => (
+                <span
+                  key={dot.delay}
+                  className="absolute h-2.5 w-2.5 rounded-full border border-sage bg-ink"
+                  style={{ top: dot.top, left: dot.left, transform: `translate(${dot.translate}, ${dot.translate})` }}
+                />
+              ))}
+            </motion.div>
+            <span
+              className="absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sage"
+              aria-hidden
+            />
+          </div>
+        </Reveal>
+
+        <Reveal>
+          <Eyebrow dark>03 — Teknologi</Eyebrow>
+        </Reveal>
+
+        <Reveal delay={0.05}>
+          <h2 className="mx-auto mt-4 max-w-2xl font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+            Ditenagai AI yang <em className="italic text-mint">benar-benar membaca.</em>
+          </h2>
+        </Reveal>
+
+        <Reveal delay={0.1}>
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-white/60 sm:text-base">
+            Dokumen kepatuhan Anda dipahami dan dinilai langsung dari dokumen
+            sumber — bukan sekadar unggah-dan-cocokkan.
+          </p>
+        </Reveal>
+
+        <Reveal delay={0.15}>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <span className="inline-flex items-center gap-2 rounded-full bg-sage px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-white shadow-[0_14px_28px_-10px_rgba(85,158,123,0.6)]">
+              <Sparkles className="h-3.5 w-3.5" />
+              Powered by Gemini AI
+            </span>
+            {chips.map((chip) => (
+              <span
+                key={chip}
+                className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-xs font-medium text-white/70 backdrop-blur"
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
+}

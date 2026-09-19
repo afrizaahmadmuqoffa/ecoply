@@ -1,0 +1,67 @@
+'use client'
+
+import Link from 'next/link'
+import { motion } from 'motion/react'
+import { ArrowRight } from 'lucide-react'
+import Eyebrow from './Eyebrow'
+import Magnetic from './Magnetic'
+import Reveal from './Reveal'
+
+export default function FinalCta() {
+  return (
+    <section id="mulai" className="scroll-mt-24 bg-canvas py-24 sm:py-32">
+      <div className="mx-auto max-w-5xl px-6">
+        <Reveal>
+          <div className="bg-grain relative overflow-hidden rounded-[28px] bg-ink px-6 py-20 text-center text-white sm:px-16 sm:py-24">
+            {/* Aurora */}
+            <motion.div
+              className="pointer-events-none absolute left-1/2 top-[-40%] h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-sage/30 blur-[120px]"
+              animate={{ y: [0, 30, 0], scale: [1, 1.12, 1] }}
+              transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+              aria-hidden
+            />
+            <motion.div
+              className="pointer-events-none absolute bottom-[-45%] left-[10%] h-[22rem] w-[22rem] rounded-full bg-mint/15 blur-[120px]"
+              animate={{ y: [0, -30, 0] }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+              aria-hidden
+            />
+
+            <div className="relative z-10 mx-auto max-w-2xl">
+              <Eyebrow dark>04 — Mulai</Eyebrow>
+              <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+                Mulai perjalanan <em className="italic text-sage">kepatuhan</em>{' '}
+                &amp; <em className="italic text-sage">dekarbonisasi</em> Anda.
+              </h2>
+              <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-white/60 sm:text-base">
+                Daftar akun perusahaan atau fasilitas daur ulang — gratis, tanpa
+                kartu kredit.
+              </p>
+
+              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Magnetic>
+                  <Link
+                    href="/signup"
+                    className="group inline-flex items-center gap-2 rounded-full bg-sage px-7 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-sage-dark hover:shadow-[0_22px_44px_-12px_rgba(85,158,123,0.6)]"
+                  >
+                    Buat Akun
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                      strokeWidth={2.5}
+                    />
+                  </Link>
+                </Magnetic>
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 font-semibold text-white backdrop-blur transition-all hover:bg-white/10"
+                >
+                  Masuk
+                </Link>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
