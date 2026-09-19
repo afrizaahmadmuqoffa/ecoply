@@ -65,12 +65,12 @@ const auditReportSchema: Schema = {
           regulation_refs: {
             type: SchemaType.ARRAY,
             items: { type: SchemaType.STRING },
-            nullable: true,
+            nullable: false,
           },
           missing_requirements: {
             type: SchemaType.ARRAY,
             items: { type: SchemaType.STRING },
-            nullable: true,
+            nullable: false,
           },
           evidence: {
             type: SchemaType.ARRAY,
@@ -89,7 +89,7 @@ const auditReportSchema: Schema = {
               },
               required: ["source", "quote"],
             },
-            nullable: true,
+            nullable: false,
           },
         },
         required: ["area", "status", "detail"],
@@ -201,8 +201,14 @@ const auditOutputZodSchema = z.object({
         "not_assessed",
       ]),
       detail: z.string(),
-      regulation_refs: z.array(z.string()).optional(),
-      missing_requirements: z.array(z.string()).optional(),
+      regulation_refs: z
+        .array(z.string())
+        .nullish()
+        .transform((v) => v ?? undefined),
+      missing_requirements: z
+        .array(z.string())
+        .nullish()
+        .transform((v) => v ?? undefined),
       evidence: z
         .array(
           z.object({
@@ -212,7 +218,8 @@ const auditOutputZodSchema = z.object({
             quote: z.string(),
           }),
         )
-        .optional(),
+        .nullish()
+        .transform((v) => v ?? undefined),
     }),
   ),
   recommendations: z
@@ -489,8 +496,8 @@ ${blocks.join("\n\n──────\n\n")}
 INSTRUKSI:
 1. WAJIB evaluasi SEMUA 12 area audit di atas secara berurutan tanpa kecuali.
 2. Nilai berdasarkan evidence dokumen perusahaan. Jika untuk suatu area tidak ada evidence yang benar-benar relevan, JANGAN menebak — beri status "not_assessed" dan jelaskan alasannya di detail.
-3. Untuk setiap temuan, isi kolom evidence[] hanya dengan kutipan asli yang benar-benar mendukung kesimpulan: source "company_document" (cantumkan page_number bila tersedia) atau source "regulation" (cantumkan reference_id seperti REG-<nomor-area>-<nomor>, persis label yang digunakan di atas).
-4. Isi missing_requirements[] dengan kewajiban yang tidak terpenuhi atau yang tidak dapat dikonfirmasi karena datanya tidak ditemukan. Kosongkan bila tidak ada.
+3. Untuk setiap temuan, isi kolom evidence[] hanya dengan kutipan asli yang benar-benar mendukung kesimpulan: source "company_document" (cantumkan page_number bila tersedia) atau source "regulation" (cantumkan reference_id seperti REG-<nomor-area>-<nomor>, persis label yang digunakan di atas). Bila tidak ada evidence yang mendukung, isi dengan array kosong [].
+4. Isi missing_requirements[] dengan kewajiban yang tidak terpenuhi atau yang tidak dapat dikonfirmasi karena datanya tidak ditemukan. Bila tidak ada, WAJIB isi array kosong [] — DILARANG menggunakan null untuk kolom array (regulation_refs, missing_requirements, dan evidence selalu array, kosong jika tidak ada).
 5. Buat minimal 1 action item untuk SETIAP area dengan status "partial" atau "non_compliant". Total action items minimal sama dengan jumlah area yang tidak patuh penuh.
 6. DISKLAIMER TARGET vs DISCLOSURE: Jika evidence hanya menunjukkan target, komitmen, atau rencana kinerja (misalnya target penurunan emisi Scope 3, komitmen zerowaste, ekspektasi dari regulator), JANGAN menyimpulkan bahwa pelaporan/inventarisasi kinerja aktual sudah selesai dilakukan. Klaim target/perencanaan BUKAN bukti bahwa data kuantitatif aktual telah dipublikasikan. Kecualikan informasi target dari kesimpulan kepatuhan atas kewajiban pelaporan aktual.
 7. FRASA NEGATIF = BUKAN "compliant": Jika evidence (kutipan atau detail dokumen) mengandung frasa berikut, ini merupakan indikasi kuat data tidak diungkapkan dan status WAJIB "partial" atau "not_assessed", BUKAN "compliant":
