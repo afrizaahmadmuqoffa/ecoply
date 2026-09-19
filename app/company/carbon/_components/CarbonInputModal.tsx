@@ -104,7 +104,7 @@ export default function CarbonInputModal(props: CarbonFactorsProps) {
         </button>
 
         {menuOpen && (
-          <div className="fixed inset-x-4 bottom-4 z-50 bg-surface border border-border rounded-[18px] shadow-[0_24px_48px_-12px_rgba(11,31,22,0.24)] max-sm:max-h-[70vh] max-sm:overflow-y-auto sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-3 sm:w-80 sm:bottom-auto sm:overflow-hidden">
+          <div className="absolute top-full mt-3 z-50 w-80 bg-surface border border-border rounded-[18px] shadow-[0_24px_48px_-12px_rgba(11,31,22,0.24)] overflow-hidden right-0 max-sm:right-auto max-sm:left-0 max-sm:max-w-[calc(100vw-2rem)]">
             <div className="px-5 py-3 border-b border-border bg-canvas/40">
               <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-muted">
                 Pilih Metode Input
