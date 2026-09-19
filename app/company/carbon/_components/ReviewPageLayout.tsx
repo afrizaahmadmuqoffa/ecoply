@@ -132,7 +132,7 @@ export default function ReviewPageLayout({
         {/* Sidebar */}
         <aside className="lg:col-span-4 lg:sticky lg:top-6 space-y-4">
           {/* Review Actions */}
-          <div className="order-2 lg:order-1 bg-surface border border-border rounded-[18px] p-5 shadow-[0_12px_24px_-16px_rgba(11,31,22,0.06)]">
+          <div className="order-2 bg-surface border border-border rounded-[18px] p-5 shadow-[0_12px_24px_-16px_rgba(11,31,22,0.06)]">
             <div className="flex items-center gap-2 mb-4">
               <span className="w-8 h-8 rounded-lg bg-sage/20 text-sage-dark flex items-center justify-center">
                 <BadgeCheck className="w-4 h-4" strokeWidth={2} />
@@ -148,7 +148,7 @@ export default function ReviewPageLayout({
           </div>
 
           {/* Metadata card */}
-          <div className="order-1 lg:order-2 bg-surface border border-border rounded-[18px] p-5 shadow-[0_8px_16px_-12px_rgba(11,31,22,0.06)]">
+          <div className="order-1 bg-surface border border-border rounded-[18px] p-5 shadow-[0_8px_16px_-12px_rgba(11,31,22,0.06)]">
             <div className="flex items-center gap-2 mb-4">
               <span className="w-8 h-8 rounded-lg bg-canvas text-muted flex items-center justify-center">
                 <Info className="w-4 h-4" strokeWidth={2} />
