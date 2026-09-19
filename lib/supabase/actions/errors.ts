@@ -5,5 +5,6 @@ export function uniqueViolationMessage(
   const m = error.message ?? ''
   if (/npwp/i.test(m)) return 'NPWP sudah terdaftar akun lain.'
   if (/nik/i.test(m)) return 'NIK sudah terdaftar akun lain.'
+  if (/nib/i.test(m)) return 'NIB sudah terdaftar akun lain.'
   return 'NPWP/NIK sudah terdaftar akun lain.'
 }
