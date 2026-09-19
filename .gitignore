@@ -46,6 +46,7 @@ supabase/.temp
 next-env.d.ts
 
 # dokumen tidak penting (planning/test)
+README.md
 sustainability-report-2025-unilever.pdf
 rag_compliance.md
 prd.txt
