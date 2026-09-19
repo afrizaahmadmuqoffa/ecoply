@@ -30,8 +30,16 @@ type Props = {
 export default function EditEnergyForm({ id, gridFactors, initial, onSaved }: Props) {
   const router = useRouter()
   const [energyType, setEnergyType] = useState<'electricity' | 'steam'>(initial.energy_type)
-  const [gridId, setGridId] = useState(initial.grid_ef_id ?? '')
-  const [unit, setUnit] = useState<'kWh' | 'MWh' | 'MMBtu'>(initial.unit)
+  const [gridByType, setGridByType] = useState<Record<'electricity' | 'steam', string>>(() => ({
+    electricity: initial.energy_type === 'electricity' ? (initial.grid_ef_id ?? '') : '',
+    steam: initial.energy_type === 'steam' ? (initial.grid_ef_id ?? '') : '',
+  }))
+  const [unitByType, setUnitByType] = useState<Record<'electricity' | 'steam', 'kWh' | 'MWh' | 'MMBtu'>>(() => ({
+    electricity: initial.energy_type === 'electricity' ? initial.unit : 'kWh',
+    steam: initial.energy_type === 'steam' ? initial.unit : 'MMBtu',
+  }))
+  const gridId = gridByType[energyType]
+  const unit = unitByType[energyType]
   const [consumption, setConsumption] = useState(String(initial.consumption))
   const [useCustomEf, setUseCustomEf] = useState(initial.use_custom_ef)
   const [customEf, setCustomEf] = useState(initial.custom_ef_kg_co2e ? String(initial.custom_ef_kg_co2e) : '')
@@ -128,11 +136,7 @@ export default function EditEnergyForm({ id, gridFactors, initial, onSaved }: Pr
               <button
                 key={t}
                 type="button"
-                onClick={() => {
-                  setEnergyType(t)
-                  setGridId('')
-                  setUnit(t === 'steam' ? 'MMBtu' : 'kWh')
-                }}
+                onClick={() => setEnergyType(t)}
                 className={`flex-1 py-2 text-xs rounded-full font-semibold transition-all flex items-center justify-center gap-1.5 ${
                   energyType === t ? 'bg-gray-800 text-white shadow-sm' : 'text-muted hover:text-ink'
                 }`}
@@ -165,7 +169,7 @@ export default function EditEnergyForm({ id, gridFactors, initial, onSaved }: Pr
               <select
                 required
                 value={gridId}
-                onChange={e => setGridId(e.target.value)}
+                onChange={e => setGridByType(p => ({ ...p, [energyType]: e.target.value }))}
                 className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
               >
                 <option value="">Pilih...</option>
@@ -189,7 +193,7 @@ export default function EditEnergyForm({ id, gridFactors, initial, onSaved }: Pr
                 <button
                   key={u}
                   type="button"
-                  onClick={() => setUnit(u)}
+                  onClick={() => setUnitByType(p => ({ ...p, electricity: u }))}
                   className={`flex-1 py-2 text-xs rounded-full font-semibold transition-all ${
                     unit === u ? 'bg-gray-800 text-white shadow-sm' : 'text-muted hover:text-ink'
                   }`}
@@ -230,7 +234,7 @@ export default function EditEnergyForm({ id, gridFactors, initial, onSaved }: Pr
           <input
             type="checkbox"
             checked={useCustomEf}
-            onChange={e => { setUseCustomEf(e.target.checked); if (!e.target.checked) setGridId('') }}
+            onChange={e => { setUseCustomEf(e.target.checked); if (!e.target.checked) setGridByType(p => ({ ...p, [energyType]: '' })) }}
             className="mt-0.5 w-4 h-4 rounded border-border text-sage focus:ring-sage"
           />
           <div>

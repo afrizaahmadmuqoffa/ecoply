@@ -13,8 +13,10 @@ type Props = { gridFactors: GridFactor[] }
 export default function Scope2EnergyForm({ gridFactors }: Props) {
   const router = useRouter()
   const [energyType, setEnergyType] = useState<'electricity' | 'steam'>('electricity')
-  const [gridId, setGridId] = useState('')
-  const [unit, setUnit] = useState<'kWh' | 'MWh' | 'MMBtu'>('kWh')
+  const [gridByType, setGridByType] = useState<Record<'electricity' | 'steam', string>>({ electricity: '', steam: '' })
+  const [unitByType, setUnitByType] = useState<Record<'electricity' | 'steam', 'kWh' | 'MWh' | 'MMBtu'>>({ electricity: 'kWh', steam: 'MMBtu' })
+  const gridId = gridByType[energyType]
+  const unit = unitByType[energyType]
   const [consumption, setConsumption] = useState('')
   const [useCustomEf, setUseCustomEf] = useState(false)
   const [customEf, setCustomEf] = useState('')
@@ -82,7 +84,7 @@ export default function Scope2EnergyForm({ gridFactors }: Props) {
           <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">Tipe Energi</label>
           <div className="flex gap-1 bg-canvas border border-border p-1 rounded-full">
             {(['electricity', 'steam'] as const).map(t => (
-              <button key={t} type="button" onClick={() => { setEnergyType(t); setGridId(''); setUnit(t === 'steam' ? 'MMBtu' : 'kWh') }}
+              <button key={t} type="button" onClick={() => setEnergyType(t)}
                 className={`flex-1 py-2 text-xs rounded-full font-semibold transition-all flex items-center justify-center gap-1.5 ${
                   energyType === t ? 'bg-gray-800 text-white shadow-sm' : 'text-muted hover:text-ink'
                 }`}>
@@ -110,7 +112,7 @@ export default function Scope2EnergyForm({ gridFactors }: Props) {
                 <p className="text-xs text-amber-800">Belum ada faktor emisi {energyType}. Admin perlu menambahkan.</p>
               </div>
             ) : (
-              <select required={!useCustomEf} value={gridId} onChange={e => setGridId(e.target.value)}
+              <select required={!useCustomEf} value={gridId} onChange={e => setGridByType(p => ({ ...p, [energyType]: e.target.value }))}
                 className="w-full px-4 py-2.5 bg-canvas border border-border rounded-xl text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all">
                 <option value="">Pilih...</option>
                 {currentFactors.map(f => (
@@ -128,7 +130,7 @@ export default function Scope2EnergyForm({ gridFactors }: Props) {
             <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">Satuan</label>
             <div className="flex gap-1 bg-canvas border border-border p-1 rounded-full">
               {(['kWh', 'MWh'] as const).map(u => (
-                <button key={u} type="button" onClick={() => setUnit(u)}
+                <button key={u} type="button" onClick={() => setUnitByType(p => ({ ...p, electricity: u }))}
                   className={`flex-1 py-2 text-xs rounded-full font-semibold transition-all ${
                     unit === u ? 'bg-gray-800 text-white shadow-sm' : 'text-muted hover:text-ink'
                   }`}>{u}</button>
@@ -162,7 +164,7 @@ export default function Scope2EnergyForm({ gridFactors }: Props) {
         )}
 
         <label className="flex items-start gap-2.5 p-3 bg-canvas border border-border rounded-xl cursor-pointer hover:border-sage/40 transition-colors">
-          <input type="checkbox" checked={useCustomEf} onChange={e => { setUseCustomEf(e.target.checked); if (!e.target.checked) setGridId('') }}
+          <input type="checkbox" checked={useCustomEf} onChange={e => { setUseCustomEf(e.target.checked); if (!e.target.checked) setGridByType(p => ({ ...p, [energyType]: '' })) }}
             className="mt-0.5 w-4 h-4 rounded border-border text-sage focus:ring-sage" />
           <div>
             <p className="text-sm font-semibold text-ink">Gunakan faktor emisi custom</p>
