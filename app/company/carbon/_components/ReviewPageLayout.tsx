@@ -94,7 +94,7 @@ export default function ReviewPageLayout({
 
       {/* Hero header */}
       <div className={`bg-gradient-to-br ${s.heroBg} border border-border rounded-[22px] p-6 sm:p-8 mb-6 shadow-[0_12px_24px_-16px_rgba(11,31,22,0.06)]`}>
-        <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="min-w-0 flex-1">
             <span className="inline-block text-[11px] font-bold tracking-[0.18em] uppercase text-sage-dark mb-2">
               Detail Entri
