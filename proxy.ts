@@ -57,7 +57,8 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const pathname = request.nextUrl.pathname
+  // Normalisasi double slash (mis. ...//auth/callback) agar cek public path benar
+  const pathname = request.nextUrl.pathname.replace(/\/{2,}/g, '/')
 
   // Public paths — always accessible
   const publicPaths = [
