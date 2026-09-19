@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { Check, Eye, FileText, Info, Loader2, Trash2 } from 'lucide-react'
 import { archiveRegulation } from '@/lib/supabase/actions/admin'
+import Pagination from '@/components/ui/Pagination'
+import usePagination from '@/lib/hooks/usePagination'
 import ChunkPreviewModal, { type EditableChunk } from './ChunkPreviewModal'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 
@@ -52,6 +54,8 @@ export default function RegulationList({ title, regulations, count, muted = fals
   const [archiving, setArchiving] = useState<string | null>(null)
   const [previewRegId, setPreviewRegId] = useState<string | null>(null)
   const [confirmingArchiveId, setConfirmingArchiveId] = useState<string | null>(null)
+
+  const pag = usePagination(regulations)
 
   const previewReg = previewRegId
     ? regulations.find((r) => r.id === previewRegId)
@@ -142,13 +146,13 @@ export default function RegulationList({ title, regulations, count, muted = fals
 
         {/* List */}
         <ul className="divide-y divide-border">
-          {regulations.map((reg) => {
+          {pag.pageItems.map((reg) => {
             const cat = categoryColor[reg.category] ?? categoryColor.Lainnya
             return (
-              <li key={reg.id} className="px-6 py-4 hover:bg-canvas/40 transition-colors">
-                <div className="flex items-start gap-4">
+              <li key={reg.id} className="px-4 sm:px-6 py-4 hover:bg-canvas/40 transition-colors">
+                <div className="flex items-start gap-3 sm:gap-4 flex-wrap">
                   {/* Icon tile */}
-                  <div className="w-11 h-11 rounded-xl bg-mint text-sage-dark flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-mint text-sage-dark flex items-center justify-center flex-shrink-0 mt-0.5">
                     <FileText className="w-5 h-5" strokeWidth={1.8} />
                   </div>
 
@@ -210,12 +214,12 @@ export default function RegulationList({ title, regulations, count, muted = fals
 
                   {/* Actions — active only */}
                   {reg.status === 'active' && (
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex items-center gap-2 w-full sm:w-auto sm:flex-shrink-0">
                       {/* Preview & Embed — only if not yet embedded */}
                       {reg.file_path && !reg.is_embedded && (
                         <button
                           onClick={() => setPreviewRegId(reg.id)}
-                          className="group inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-sage hover:bg-sage-dark text-white text-xs font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_16px_-4px_rgba(85,158,123,0.4)]"
+                          className="group flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 sm:py-1.5 bg-sage hover:bg-sage-dark text-white text-xs font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_16px_-4px_rgba(85,158,123,0.4)]"
                           title="Preview chunks sebelum embed"
                         >
                           <Eye className="w-3.5 h-3.5" strokeWidth={2} />
@@ -227,7 +231,7 @@ export default function RegulationList({ title, regulations, count, muted = fals
                       <button
                         onClick={() => setConfirmingArchiveId(reg.id)}
                         disabled={archiving === reg.id}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border text-muted hover:border-red-200 hover:text-red-600 hover:bg-red-50 text-xs font-semibold rounded-full transition-all disabled:opacity-50"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:py-1.5 border border-border text-muted hover:border-red-200 hover:text-red-600 hover:bg-red-50 text-xs font-semibold rounded-full transition-all disabled:opacity-50"
                         title="Arsipkan regulasi"
                       >
                         {archiving === reg.id ? (
@@ -244,6 +248,12 @@ export default function RegulationList({ title, regulations, count, muted = fals
             )
           })}
         </ul>
+
+        {regulations.length > 0 && (
+          <div className="px-6 py-3.5 border-t border-border">
+            <Pagination {...pag} onPageChange={pag.goToPage} />
+          </div>
+        )}
       </div>
     </>
   )

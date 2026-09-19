@@ -6,6 +6,8 @@ import { toast } from 'sonner'
 import { deleteAuditJob } from '@/lib/supabase/actions/compliance'
 import { friendlyGeminiError } from '@/lib/gemini/errors'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import Pagination from '@/components/ui/Pagination'
+import usePagination from '@/lib/hooks/usePagination'
 import { AlertTriangle, ArrowRight, Check, Clock, FileText, Loader2, Trash2, X } from 'lucide-react'
 
 type Job = {
@@ -71,6 +73,8 @@ export default function AuditJobList({ jobs }: { jobs: Job[] }) {
   const [confirmingId, setConfirmingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  const pag = usePagination(jobs)
+
   async function handleDelete(jobId: string) {
     setDeletingId(jobId)
     setError(null)
@@ -119,7 +123,7 @@ export default function AuditJobList({ jobs }: { jobs: Job[] }) {
       )}
 
       <ul className="divide-y divide-border">
-        {jobs.map((job) => {
+        {pag.pageItems.map((job) => {
           const s = statusConfig[job.status]
           const canDelete = job.status === 'done' || job.status === 'failed'
           const isDeleting = deletingId === job.id
@@ -188,6 +192,10 @@ export default function AuditJobList({ jobs }: { jobs: Job[] }) {
           )
         })}
       </ul>
+
+      <div className="px-6 py-3.5 border-t border-border">
+        <Pagination {...pag} onPageChange={pag.goToPage} />
+      </div>
       </div>
 
       <ConfirmDialog

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { verifyEntity, bulkVerifyEntities } from '@/lib/supabase/actions/admin'
 import { AlertTriangle, Check, X } from 'lucide-react'
+import Pagination from '@/components/ui/Pagination'
+import usePagination from '@/lib/hooks/usePagination'
 import VerificationCard from './VerificationCard'
 import VerifyConfirmModal from './VerifyConfirmModal'
 
@@ -41,6 +43,9 @@ export default function VerificationList({ pending, reviewed }: Props) {
   const [modalSession, setModalSession] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const pendingPag = usePagination(pending)
+  const reviewedPag = usePagination(reviewed)
 
   function toggle(requestId: string) {
     setSelected((prev) => {
@@ -136,7 +141,7 @@ export default function VerificationList({ pending, reviewed }: Props) {
             </label>
           </div>
           <div className="space-y-3">
-            {pending.map((item) => (
+            {pendingPag.pageItems.map((item) => (
               <VerificationCard
                 key={item.request.id}
                 request={item.request}
@@ -146,6 +151,7 @@ export default function VerificationList({ pending, reviewed }: Props) {
               />
             ))}
           </div>
+          <Pagination {...pendingPag} onPageChange={pendingPag.goToPage} />
         </section>
       )}
 
@@ -160,7 +166,7 @@ export default function VerificationList({ pending, reviewed }: Props) {
             </span>
           </h2>
           <div className="space-y-3">
-            {reviewed.map((item) => (
+            {reviewedPag.pageItems.map((item) => (
               <VerificationCard
                 key={item.request.id}
                 request={item.request}
@@ -169,6 +175,7 @@ export default function VerificationList({ pending, reviewed }: Props) {
               />
             ))}
           </div>
+          <Pagination {...reviewedPag} onPageChange={reviewedPag.goToPage} />
         </section>
       )}
 

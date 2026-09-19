@@ -118,7 +118,7 @@ export default function CarbonConfigTabs(props: Props) {
         <select
           value={activeTab}
           onChange={(e) => setActiveTab(e.target.value as TabId)}
-          className="w-full px-4 py-2.5 bg-canvas border border-border rounded-xl text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20"
+          className="w-full px-3 py-2 bg-canvas border border-border rounded-lg text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20"
         >
           {GROUPS.map((g) => (
             <optgroup key={g.id} label={`${g.badgeText} — ${g.label}`}>

@@ -49,7 +49,7 @@ export default function AdminSidebar({ userName, onNavigate }: Props) {
         <div className="min-w-0">
           <Logo height={46} />
         </div>
-        <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-sage-dark bg-mint px-2 py-1 rounded flex-shrink-0 whitespace-nowrap">
+        <span className="text-[8px] font-bold tracking-[0.14em] uppercase text-sage-dark bg-mint px-1.5 py-0.5 rounded flex-shrink-0 whitespace-nowrap">
           Admin
         </span>
       </div>

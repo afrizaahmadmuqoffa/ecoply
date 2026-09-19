@@ -7,6 +7,8 @@ import {
 import Link from "next/link"
 import ListingThumbnail from "@/components/marketplace/ListingThumbnail"
 import { Skeleton } from "@/components/ui/skeletons"
+import Pagination from "@/components/ui/Pagination"
+import usePagination from "@/lib/hooks/usePagination"
 import {
   AlertTriangle,
   ArrowRight,
@@ -262,6 +264,8 @@ function ListingsFeed({
     return true
   })
 
+  const pag = usePagination(filteredListings)
+
   return (
     <div>
       {/* Filter bar */}
@@ -277,7 +281,10 @@ function ListingsFeed({
                 type="text"
                 placeholder="Contoh: PET, Kardus, Aluminium..."
                 value={materialFilter}
-                onChange={(e) => setMaterialFilter(e.target.value)}
+                onChange={(e) => {
+                  setMaterialFilter(e.target.value)
+                  pag.goToPage(1)
+                }}
                 className="w-full pl-10 pr-4 py-2.5 bg-canvas border border-border rounded-full text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
               />
             </div>
@@ -317,7 +324,10 @@ function ListingsFeed({
             </label>
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as ListingStatus | "")}
+              onChange={(e) => {
+                setStatusFilter(e.target.value as ListingStatus | "")
+                pag.goToPage(1)
+              }}
               className="w-full px-4 py-2.5 bg-canvas border border-border rounded-xl text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
             >
               {STATUS_FILTER_OPTIONS.map((opt) => (
@@ -330,7 +340,10 @@ function ListingsFeed({
             <input
               type="checkbox"
               checked={freeOnly}
-              onChange={(e) => setFreeOnly(e.target.checked)}
+              onChange={(e) => {
+                setFreeOnly(e.target.checked)
+                pag.goToPage(1)
+              }}
               className="w-4 h-4 text-sage border-border rounded focus:ring-sage"
             />
             <span className="text-xs font-semibold text-ink whitespace-nowrap">Gratis saja</span>
@@ -356,10 +369,14 @@ function ListingsFeed({
 
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredListings.map((listing) => (
+        {pag.pageItems.map((listing) => (
           <ListingCard key={listing.id} listing={listing} />
         ))}
       </div>
+
+      {filteredListings.length > 0 && (
+        <Pagination {...pag} onPageChange={pag.goToPage} />
+      )}
 
       {/* Empty state */}
       {filteredListings.length === 0 && (

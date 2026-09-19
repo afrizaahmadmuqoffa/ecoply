@@ -1,19 +1,9 @@
 import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import { AlertTriangle, ArrowRight, Check, FileText, Inbox, Leaf, X } from 'lucide-react'
+import { AlertTriangle, Inbox, Leaf } from 'lucide-react'
 import CarbonInputModal from './_components/CarbonInputModal'
-import DeleteDraftButton from './_components/DeleteDraftButton'
-import DeleteConfirmedButton from './_components/DeleteConfirmedButton'
-
-type ActivityType = 'combustion' | 'vehicle' | 'fugitive' | 'energy' | 's3c1' | 's3c2'
-
-function fmt(kg: number | null) {
-  if (kg === null) return '—'
-  const t = kg / 1000
-  return t >= 1000 ? `${(t / 1000).toFixed(3)} ktCO₂e` : `${t.toFixed(4)} tCO₂e`
-}
+import ActivitySectionList, { type ActivityEntry, type ActivityType } from './_components/ActivitySectionList'
 
 export default async function CompanyCarbonPage() {
   const supabase = await createClient()
@@ -230,48 +220,13 @@ function getS3Label(r: S3Row): string {
   }
 }
 
-type Entry = {
-  id: string
-  type: ActivityType
-  label: string
-  sub: string
-  emission: number | null
-  status: string
-  period: string
-  href: string
-}
-
 const scopeColorMap: Record<string, { bg: string; text: string; border: string }> = {
   amber: { bg: 'bg-amber-50', text: 'text-amber-800', border: 'border-amber-200' },
   sky: { bg: 'bg-sky-50', text: 'text-sky-800', border: 'border-sky-200' },
   purple: { bg: 'bg-purple-50', text: 'text-purple-800', border: 'border-purple-200' },
 }
 
-const statusConfig: Record<string, { label: string; classes: string; icon: React.ReactNode }> = {
-  draft: {
-    label: 'Draft',
-    classes: 'text-amber-800 bg-amber-50 border-amber-200',
-    icon: (
-      <FileText className="w-2.5 h-2.5" strokeWidth={3} />
-    ),
-  },
-  confirmed: {
-    label: 'Confirmed',
-    classes: 'text-sage-dark bg-mint border-sage/30',
-    icon: (
-      <Check className="w-2.5 h-2.5" strokeWidth={3} />
-    ),
-  },
-  rejected: {
-    label: 'Rejected',
-    classes: 'text-red-700 bg-red-50 border-red-200',
-    icon: (
-      <X className="w-2.5 h-2.5" strokeWidth={3} />
-    ),
-  },
-}
-
-function ActivitySection({ title, scope, color, entries }: { title: string; scope: string; color: string; entries: Entry[] }) {
+function ActivitySection({ title, scope, color, entries }: { title: string; scope: string; color: string; entries: ActivityEntry[] }) {
   const scopeColor = scopeColorMap[color] ?? scopeColorMap.amber
   const isEmpty = entries.length === 0
 
@@ -295,49 +250,7 @@ function ActivitySection({ title, scope, color, entries }: { title: string; scop
           <p className="text-xs text-muted/70 mt-1">Tambahkan lewat tombol «Input Karbon» di atas.</p>
         </div>
       ) : (
-      <ul className="divide-y divide-border">
-        {entries.map((e) => {
-          const status = statusConfig[e.status] ?? statusConfig.draft
-          return (
-            <li key={e.id} className="px-6 py-4 hover:bg-canvas/40 transition-colors">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-bold text-ink tracking-tight truncate">{e.label}</p>
-                  <p className="text-xs text-muted mt-0.5 tabular-nums">
-                    {e.sub} · {new Date(e.period).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {e.emission !== null && (
-                    <span className="text-sm font-extrabold text-ink tracking-tight tabular-nums">
-                      {fmt(e.emission)}
-                    </span>
-                  )}
-                  <span className={`inline-flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full border ${status.classes}`}>
-                    {status.icon}
-                    {status.label}
-                  </span>
-                  {e.status === 'draft' && (
-                    <>
-                      <Link
-                        href={e.href}
-                        className="group inline-flex items-center gap-1 px-3 py-1.5 bg-sage hover:bg-sage-dark text-white text-xs font-semibold rounded-full transition-all hover:-translate-y-0.5"
-                      >
-                        Review
-                        <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" strokeWidth={2.5} />
-                      </Link>
-                      <DeleteDraftButton id={e.id} type={e.type} />
-                    </>
-                  )}
-                  {e.status === 'confirmed' && (
-                    <DeleteConfirmedButton id={e.id} type={e.type} />
-                  )}
-                </div>
-              </div>
-            </li>
-          )
-        })}
-        </ul>
+        <ActivitySectionList entries={entries} />
       )}
     </div>
   )

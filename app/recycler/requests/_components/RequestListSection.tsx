@@ -4,6 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { respondToCompanyRequest } from '@/lib/supabase/actions/marketplace'
+import Pagination from '@/components/ui/Pagination'
+import usePagination from '@/lib/hooks/usePagination'
 import { AlertTriangle, Calendar, Check, Clock, MessageCircle, X } from 'lucide-react'
 
 export type IncomingRequest = {
@@ -89,6 +91,8 @@ export default function RequestListSection({ requests, onRefresh }: Props) {
     : requests
   const pendingCount = requests.filter((r) => r.status === 'pending').length
 
+  const pag = usePagination(filtered)
+
   const handleRespond = async (bidId: string, action: 'accept' | 'reject') => {
     setProcessing(true)
     setActionMsg(null)
@@ -158,7 +162,10 @@ export default function RequestListSection({ requests, onRefresh }: Props) {
           <button
             key={opt.value || 'all'}
             type="button"
-            onClick={() => setFilter(opt.value)}
+            onClick={() => {
+              setFilter(opt.value)
+              pag.goToPage(1)
+            }}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
               filter === opt.value
                 ? 'bg-sage text-white shadow-[0_4px_10px_-4px_rgba(85,158,123,0.5)]'
@@ -177,7 +184,7 @@ export default function RequestListSection({ requests, onRefresh }: Props) {
           </p>
         ) : (
           <div className="divide-y divide-border">
-            {filtered.map((req) => {
+            {pag.pageItems.map((req) => {
               const listing = req.waste_listings
               const company = listing?.companies
               const isPending = req.status === 'pending'
@@ -283,6 +290,8 @@ export default function RequestListSection({ requests, onRefresh }: Props) {
           </div>
         )}
       </div>
+
+      <Pagination {...pag} onPageChange={pag.goToPage} />
     </div>
   )
 }

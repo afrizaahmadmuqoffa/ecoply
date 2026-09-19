@@ -11,6 +11,8 @@ import {
 } from '@/lib/supabase/actions/marketplace'
 import { AlertTriangle, ArrowLeft, ArrowRight, BadgeCheck, Check, CheckCircle2, Clock, Factory, Info, Loader2, MapPin, Maximize, Navigation, Package, Search, Send, X } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeletons'
+import Pagination from '@/components/ui/Pagination'
+import usePagination from '@/lib/hooks/usePagination'
 
 type Recycler = {
   recycler_id: string
@@ -316,6 +318,8 @@ export default function CompanyRecyclersPage() {
     )
   })
 
+  const pag = usePagination(filtered)
+
   const materialOptions = Array.from(
     new Set(recyclers.flatMap((r) => r.accepted_materials)),
   )
@@ -423,7 +427,10 @@ export default function CompanyRecyclersPage() {
                   type="text"
                   placeholder="Cari nama recycler atau material..."
                   value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
+                  onChange={(e) => {
+                    setFilter(e.target.value)
+                    pag.goToPage(1)
+                  }}
                   className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-full text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
                 />
               </div>
@@ -435,7 +442,10 @@ export default function CompanyRecyclersPage() {
         {!loading && materialOptions.length > 0 && (
           <div className="flex items-center gap-2 flex-wrap mb-5">
             <button
-              onClick={() => setFilter('')}
+              onClick={() => {
+                setFilter('')
+                pag.goToPage(1)
+              }}
               className={`px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase rounded-full border transition-all ${
                 filter === ''
                   ? 'bg-sage border-sage text-white'
@@ -449,7 +459,10 @@ export default function CompanyRecyclersPage() {
               return (
                 <button
                   key={m}
-                  onClick={() => setFilter(active ? '' : m)}
+                  onClick={() => {
+                    setFilter(active ? '' : m)
+                    pag.goToPage(1)
+                  }}
                   className={`px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase rounded-full border transition-all ${
                     active
                       ? 'bg-sage border-sage text-white'
@@ -495,7 +508,7 @@ export default function CompanyRecyclersPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {filtered.map((r) => (
+            {pag.pageItems.map((r) => (
               <div
                 key={r.recycler_id}
                 className="group bg-surface border border-border rounded-[18px] p-5 hover:border-sage/40 hover:-translate-y-0.5 hover:shadow-[0_16px_32px_-16px_rgba(11,31,22,0.12)] transition-all"
@@ -602,6 +615,10 @@ export default function CompanyRecyclersPage() {
                 </div>
               </div>
             ))}
+
+            {filtered.length > 0 && (
+              <Pagination {...pag} onPageChange={pag.goToPage} />
+            )}
           </div>
         )}
 

@@ -520,16 +520,23 @@ export default function CompanyProfilePage() {
               type="button"
               onClick={handleAutoDetect}
               disabled={isAutoDetectBusy}
-              className="group inline-flex items-center gap-2 px-4 py-2 bg-sage hover:bg-sage-dark text-white text-xs font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_16px_-4px_rgba(85,158,123,0.4)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none flex-shrink-0"
+              className="px-3 py-1.5 rounded-full border border-border bg-surface text-xs font-semibold text-sage-dark hover:border-sage hover:text-sage disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 transition-colors flex-shrink-0"
             >
-              {isAutoDetectBusy && (
-                <Loader2 className="animate-spin w-3.5 h-3.5" />
+              {isAutoDetectBusy ? (
+                <>
+                  <Loader2 className="animate-spin h-3 w-3" />
+                  <span>
+                    {loadingPhase === 'geolocating'
+                      ? 'Mendeteksi...'
+                      : 'Mengambil alamat...'}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <MapPin className="w-3 h-3" />
+                  Auto-detect lokasi
+                </>
               )}
-              {loadingPhase === 'geolocating'
-                ? 'Mendeteksi...'
-                : loadingPhase === 'fetching-address'
-                  ? 'Mengambil alamat...'
-                  : 'Auto-Detect'}
             </button>
           </div>
 
@@ -825,7 +832,7 @@ function CertificationAdder({
             ) : (
               <span className="text-muted flex items-center justify-center gap-2">
                 <UploadCloud className="w-4 h-4" strokeWidth={2} />
-                Pilih file bukti (PDF/JPG/PNG, maks 5MB)
+                Upload File (PDF/JPG/PNG, maks 5MB)
               </span>
             )}
           </label>

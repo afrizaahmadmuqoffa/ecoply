@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   ArrowRight,
   Check,
+  ChevronDown,
   Loader2,
   Pencil,
   RefreshCw,
@@ -138,18 +139,114 @@ export default function ChunkPreviewModal({
       return c.quality === filter
     })
 
-  const statsCards = [
-    { label: 'Akan di-Embed', value: activeChunks.length, accent: 'sage' as const },
-    { label: 'Dibuang Otomatis', value: preview?.filteredOut ?? 0, accent: 'muted' as const },
-    { label: 'Dihapus Manual', value: deletedCount, accent: 'red' as const },
-    { label: 'Diedit', value: editedCount, accent: 'amber' as const },
-  ]
+  const chunkOptions = (() => {
+    const selectedInFilter = selectedChunk && filteredChunks.some((c) => c.originalIndex === selectedIndex)
+    if (selectedChunk && !selectedInFilter) {
+      return [{ ...selectedChunk, originalIndex: selectedIndex! }, ...filteredChunks]
+    }
+    return filteredChunks
+  })()
 
-  const statsAccent = {
-    sage: { bg: 'bg-mint', text: 'text-sage-dark' },
-    muted: { bg: 'bg-canvas', text: 'text-muted' },
-    red: { bg: 'bg-red-50', text: 'text-red-700' },
-    amber: { bg: 'bg-amber-50', text: 'text-amber-800' },
+  function renderEditor() {
+    if (!selectedChunk) {
+      return (
+        <div className="h-full flex flex-col items-center justify-center text-center p-6">
+          <div className="w-12 h-12 rounded-full bg-canvas flex items-center justify-center mb-3">
+            <WandSparkles className="w-5 h-5 text-muted" strokeWidth={1.8} />
+          </div>
+          <p className="text-sm text-muted">Pilih chunk di sebelah kiri untuk melihat dan mengeditnya</p>
+        </div>
+      )
+    }
+    return (
+      <>
+        {/* Chunk toolbar */}
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-canvas/40 flex-shrink-0 flex-wrap">
+          <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-ink">
+            Chunk #{selectedIndex! + 1}
+          </span>
+          {!selectedChunk.deleted && (
+            <span className={`inline-flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded border ${qualityConfig[selectedChunk.quality].color}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${qualityConfig[selectedChunk.quality].dot}`} />
+              {qualityConfig[selectedChunk.quality].label}
+            </span>
+          )}
+          {selectedChunk.edited && !selectedChunk.deleted && (
+            <span className="text-[10px] font-bold tracking-wider uppercase text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
+              <Pencil className="w-3 h-3" /> Diedit
+            </span>
+          )}
+          {selectedChunk.deleted && (
+            <span className="text-[10px] font-bold tracking-wider uppercase text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded">
+              <Trash2 className="w-3.5 h-3.5" /> Akan dihapus
+            </span>
+          )}
+          <span className="text-[11px] font-mono text-muted ml-auto tabular-nums">
+            ~{Math.ceil(selectedChunk.editedText.length / 4)} token
+          </span>
+          <button
+            onClick={() => handleDeleteToggle(selectedIndex!)}
+            className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full transition-all ${
+              selectedChunk.deleted
+                ? 'bg-sage text-white hover:bg-sage-dark'
+                : 'border border-red-200 bg-red-50 text-red-700 hover:bg-red-100'
+            }`}
+          >
+            {selectedChunk.deleted ? (
+              <>
+                <Undo2 className="w-3 h-3" strokeWidth={2.5} />
+                Pulihkan
+              </>
+            ) : (
+              <>
+                <Trash2 className="w-3 h-3" strokeWidth={2} />
+                Hapus
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Editable textarea */}
+        <div className="flex-1 flex flex-col p-4 min-h-0">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted">
+              Edit Teks Chunk
+            </p>
+            <p className="text-[10px] text-muted italic">
+              Kosongkan untuk menghapus otomatis
+            </p>
+          </div>
+          <textarea
+            value={selectedChunk.editedText}
+            onChange={(e) => handleTextChange(selectedIndex!, e.target.value)}
+            disabled={selectedChunk.deleted}
+            className={`flex-1 text-base sm:text-sm text-ink leading-relaxed font-sans border rounded-lg p-3 resize-none focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all ${
+              selectedChunk.deleted
+                ? 'bg-canvas/60 text-muted/70 cursor-not-allowed border-border'
+                : selectedChunk.editedText.trim() === ''
+                  ? 'bg-red-50/50 border-red-300'
+                  : 'bg-white border-border'
+            }`}
+            spellCheck={false}
+          />
+          {selectedChunk.editedText.trim() === '' && !selectedChunk.deleted && (
+            <p className="text-xs text-red-600 mt-2 flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
+              Teks kosong — chunk ini akan otomatis dihapus saat embed
+            </p>
+          )}
+          {selectedChunk.edited && !selectedChunk.deleted && selectedChunk.editedText.trim() !== '' && (
+            <button
+              onClick={() => handleTextChange(selectedIndex!, selectedChunk.text)}
+              className="text-xs text-muted hover:text-sage-dark mt-2 self-start flex items-center gap-1 font-medium"
+            >
+              <RefreshCw className="w-3 h-3" strokeWidth={2} />
+              Reset ke teks asli
+            </button>
+          )}
+        </div>
+      </>
+    )
   }
 
   return (
@@ -174,7 +271,7 @@ export default function ChunkPreviewModal({
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-hidden flex flex-col px-6 py-5 min-h-0">
+        <div className="flex-1 overflow-hidden flex flex-col px-3 sm:px-6 py-4 sm:py-5 min-h-0">
 
           {/* IDLE state */}
           {state === 'idle' && (
@@ -238,23 +335,6 @@ export default function ChunkPreviewModal({
           {(state === 'loaded' || state === 'embedding' || state === 'done') && preview && (
             <div className="flex-1 flex flex-col min-h-0 gap-3">
 
-              {/* Stats cards */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
-                {statsCards.map((s) => {
-                  const a = statsAccent[s.accent]
-                  return (
-                    <div key={s.label} className={`${a.bg} rounded-xl px-3 py-2.5`}>
-                      <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted">
-                        {s.label}
-                      </p>
-                      <p className={`text-xl font-extrabold tracking-tight mt-0.5 ${a.text}`}>
-                        {s.value}
-                      </p>
-                    </div>
-                  )
-                })}
-              </div>
-
               {/* Quality legend + filter tabs */}
               <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3 text-xs flex-wrap">
@@ -273,6 +353,23 @@ export default function ChunkPreviewModal({
                     <span className="flex items-center gap-1.5 text-muted">
                       <span className="w-2 h-2 rounded-full bg-red-500" />
                       {badCount} noise
+                    </span>
+                  )}
+                  <span aria-hidden className="w-px h-3 bg-border rounded hidden sm:block" />
+                  <span className="text-muted font-medium tabular-nums">
+                    {activeChunks.length} akan di-embed
+                  </span>
+                  <span className="text-muted tabular-nums">
+                    {preview.filteredOut ?? 0} dibuang otomatis
+                  </span>
+                  {deletedCount > 0 && (
+                    <span className="text-red-600 font-medium tabular-nums">
+                      {deletedCount} dihapus
+                    </span>
+                  )}
+                  {editedCount > 0 && (
+                    <span className="text-amber-700 font-medium tabular-nums">
+                      {editedCount} diedit
                     </span>
                   )}
                 </div>
@@ -309,10 +406,10 @@ export default function ChunkPreviewModal({
               </div>
 
               {/* Split view */}
-              <div className="flex-1 flex gap-3 min-h-0">
-                {/* Chunk list */}
-                <div className="w-60 flex-shrink-0 flex flex-col border border-border rounded-xl overflow-hidden">
-                  <div className="px-3 py-2 border-b border-border bg-canvas/40 flex items-center justify-between">
+              <div className="flex-1 flex flex-col md:flex-row gap-3 min-h-0">
+                {/* Desktop: chunk sidebar */}
+                <div className="hidden md:flex md:w-60 md:flex-shrink-0 flex-col border border-border rounded-xl overflow-hidden">
+                  <div className="px-3 py-2 border-b border-border bg-canvas/40 flex items-center justify-between flex-shrink-0">
                     <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted">
                       Daftar Chunk
                     </span>
@@ -320,6 +417,7 @@ export default function ChunkPreviewModal({
                       {filteredChunks.length}
                     </span>
                   </div>
+
                   <div className="flex-1 overflow-y-auto">
                     {filteredChunks.length === 0 && (
                       <div className="p-4 text-center">
@@ -368,104 +466,45 @@ export default function ChunkPreviewModal({
                   </div>
                 </div>
 
+                {/* Mobile: chunk dropdown */}
+                <div className="md:hidden flex-shrink-0">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted">
+                      Pilih Chunk
+                    </span>
+                    <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted">
+                      {filteredChunks.length}
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <select
+                      value={selectedIndex ?? ''}
+                      onChange={(e) => setSelectedIndex(e.target.value === '' ? null : Number(e.target.value))}
+                      className="w-full h-10 pl-3 pr-9 rounded-lg bg-canvas border border-border text-base sm:text-sm font-semibold text-ink focus:border-sage focus:ring-2 focus:ring-sage/20 focus:outline-none transition-all appearance-none"
+                      aria-label="Pilih chunk"
+                    >
+                      {chunkOptions.length === 0 && (
+                        <option value="">Tidak ada chunk pada filter ini</option>
+                      )}
+                      {chunkOptions.map((chunk) => (
+                        <option key={chunk.originalIndex} value={chunk.originalIndex}>
+                          #{chunk.originalIndex + 1} · {qualityConfig[chunk.quality].label} · ~
+                          {Math.ceil(chunk.editedText.length / 4)} token
+                          {chunk.deleted ? ' · Dihapus' : ''}
+                          {chunk.edited && !chunk.deleted ? ' · Diedit' : ''}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown
+                      className="w-4 h-4 text-muted absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                      strokeWidth={2.5}
+                    />
+                  </div>
+                </div>
+
                 {/* Detail / Edit panel */}
                 <div className="flex-1 flex flex-col min-h-0 border border-border rounded-xl overflow-hidden">
-                  {selectedChunk ? (
-                    <>
-                      {/* Chunk toolbar */}
-                      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-canvas/40 flex-shrink-0 flex-wrap">
-                        <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-ink">
-                          Chunk #{selectedIndex! + 1}
-                        </span>
-                        {!selectedChunk.deleted && (
-                          <span className={`inline-flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded border ${qualityConfig[selectedChunk.quality].color}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${qualityConfig[selectedChunk.quality].dot}`} />
-                            {qualityConfig[selectedChunk.quality].label}
-                          </span>
-                        )}
-                        {selectedChunk.edited && !selectedChunk.deleted && (
-                          <span className="text-[10px] font-bold tracking-wider uppercase text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
-                            <Pencil className="w-3 h-3" /> Diedit
-                          </span>
-                        )}
-                        {selectedChunk.deleted && (
-                          <span className="text-[10px] font-bold tracking-wider uppercase text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded">
-                            <Trash2 className="w-3.5 h-3.5" /> Akan dihapus
-                          </span>
-                        )}
-                        <span className="text-[11px] font-mono text-muted ml-auto tabular-nums">
-                          ~{Math.ceil(selectedChunk.editedText.length / 4)} token
-                        </span>
-                        <button
-                          onClick={() => handleDeleteToggle(selectedIndex!)}
-                          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full transition-all ${
-                            selectedChunk.deleted
-                              ? 'bg-sage text-white hover:bg-sage-dark'
-                              : 'border border-red-200 bg-red-50 text-red-700 hover:bg-red-100'
-                          }`}
-                        >
-                          {selectedChunk.deleted ? (
-                            <>
-                              <Undo2 className="w-3 h-3" strokeWidth={2.5} />
-                              Pulihkan
-                            </>
-                          ) : (
-                            <>
-                              <Trash2 className="w-3 h-3" strokeWidth={2} />
-                              Hapus
-                            </>
-                          )}
-                        </button>
-                      </div>
-
-                      {/* Editable textarea */}
-                      <div className="flex-1 flex flex-col p-4 min-h-0">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted">
-                            Edit Teks Chunk
-                          </p>
-                          <p className="text-[10px] text-muted italic">
-                            Kosongkan untuk menghapus otomatis
-                          </p>
-                        </div>
-                        <textarea
-                          value={selectedChunk.editedText}
-                          onChange={(e) => handleTextChange(selectedIndex!, e.target.value)}
-                          disabled={selectedChunk.deleted}
-                          className={`flex-1 text-sm text-ink leading-relaxed font-sans border rounded-lg p-3 resize-none focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all ${
-                            selectedChunk.deleted
-                              ? 'bg-canvas/60 text-muted/70 cursor-not-allowed border-border'
-                              : selectedChunk.editedText.trim() === ''
-                                ? 'bg-red-50/50 border-red-300'
-                                : 'bg-white border-border'
-                          }`}
-                          spellCheck={false}
-                        />
-                        {selectedChunk.editedText.trim() === '' && !selectedChunk.deleted && (
-                          <p className="text-xs text-red-600 mt-2 flex items-center gap-1.5">
-                            <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
-                            Teks kosong — chunk ini akan otomatis dihapus saat embed
-                          </p>
-                        )}
-                        {selectedChunk.edited && !selectedChunk.deleted && selectedChunk.editedText.trim() !== '' && (
-                          <button
-                            onClick={() => handleTextChange(selectedIndex!, selectedChunk.text)}
-                            className="text-xs text-muted hover:text-sage-dark mt-2 self-start flex items-center gap-1 font-medium"
-                          >
-                            <RefreshCw className="w-3 h-3" strokeWidth={2} />
-                            Reset ke teks asli
-                          </button>
-                        )}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="h-full flex flex-col items-center justify-center text-center p-6">
-                      <div className="w-12 h-12 rounded-full bg-canvas flex items-center justify-center mb-3">
-                        <WandSparkles className="w-5 h-5 text-muted" strokeWidth={1.8} />
-                      </div>
-                      <p className="text-sm text-muted">Pilih chunk di sebelah kiri untuk melihat dan mengeditnya</p>
-                    </div>
-                  )}
+                  {renderEditor()}
                 </div>
               </div>
 

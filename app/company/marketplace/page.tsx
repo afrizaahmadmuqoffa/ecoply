@@ -10,6 +10,8 @@ import {
 import { getCompanyProfile } from "@/lib/supabase/actions/company";
 import { parsePostGISLocation } from "@/lib/utils/postgis";
 import { Skeleton } from "@/components/ui/skeletons";
+import Pagination from "@/components/ui/Pagination";
+import usePagination from "@/lib/hooks/usePagination";
 import MapSelector, { MapSelectorHandle } from "../../../components/mapbox/MapSelector";
 import ListingThumbnail from "../../../components/marketplace/ListingThumbnail";
 import {
@@ -567,45 +569,24 @@ function CreateListingModal({
                 type="button"
                 onClick={handleAutoDetect}
                 disabled={isAutoDetectBusy}
-                className="group inline-flex items-center gap-1.5 px-3 py-1.5 bg-sage hover:bg-sage-dark text-white text-[11px] font-semibold rounded-full transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                className="px-3 py-1.5 rounded-full border border-border bg-surface text-xs font-semibold text-sage-dark hover:border-sage hover:text-sage disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 transition-colors flex-shrink-0"
               >
-                {isAutoDetectBusy && (
-                  <Loader2 className="animate-spin w-3 h-3" />
+                {isAutoDetectBusy ? (
+                  <>
+                    <Loader2 className="animate-spin h-3 w-3" />
+                    <span>
+                      {loadingPhase === 'geolocating'
+                        ? 'Mendeteksi...'
+                        : 'Mengambil alamat...'}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="w-3 h-3" />
+                    Auto-detect lokasi
+                  </>
                 )}
-                {loadingPhase === 'geolocating'
-                  ? 'Mendeteksi...'
-                  : loadingPhase === 'fetching-address'
-                    ? 'Mengambil...'
-                    : 'Auto-Detect'}
               </button>
-            </div>
-
-            <div className="mb-3">
-              <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">
-                Alamat <span className="text-sage-dark">*</span>
-              </label>
-              <textarea
-                name="address_text"
-                value={formData.address_text}
-                readOnly
-                rows={2}
-                placeholder="Pilih lokasi di peta untuk mengisi alamat otomatis"
-                className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm text-muted cursor-not-allowed focus:outline-none resize-none"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">
-                Instruksi Pickup <span className="text-muted font-normal">(opsional)</span>
-              </label>
-              <textarea
-                name="pickup_instructions"
-                value={formData.pickup_instructions}
-                onChange={(e) => setFormData({ ...formData, pickup_instructions: e.target.value })}
-                className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all resize-none"
-                rows={2}
-                placeholder="Contoh: Gedung A pintu belakang, hubungi Pak Budi 0812-xxx"
-              />
             </div>
 
             <div className="border border-border rounded-[18px] overflow-hidden shadow-inner">
@@ -633,6 +614,34 @@ function CreateListingModal({
                 </p>
               </div>
             )}
+
+            <div className="mt-3">
+              <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">
+                Alamat <span className="text-sage-dark">*</span>
+              </label>
+              <textarea
+                name="address_text"
+                value={formData.address_text}
+                readOnly
+                rows={2}
+                placeholder="Pilih lokasi di peta untuk mengisi alamat otomatis"
+                className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm text-muted cursor-not-allowed focus:outline-none resize-none"
+              />
+            </div>
+
+            <div className="mt-3">
+              <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">
+                Instruksi Pickup <span className="text-muted font-normal">(opsional)</span>
+              </label>
+              <textarea
+                name="pickup_instructions"
+                value={formData.pickup_instructions}
+                onChange={(e) => setFormData({ ...formData, pickup_instructions: e.target.value })}
+                className="w-full px-4 py-2.5 bg-surface border border-border rounded-xl text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all resize-none"
+                rows={2}
+                placeholder="Contoh: Gedung A pintu belakang, hubungi Pak Budi 0812-xxx"
+              />
+            </div>
           </div>
 
           {/* Photos */}
@@ -762,6 +771,8 @@ function ListingsSection({ listings }: { listings: WasteListing[] }) {
     return true
   })
 
+  const pag = usePagination(filteredListings)
+
   return (
     <div>
       {/* Filter bar */}
@@ -773,7 +784,10 @@ function ListingsSection({ listings }: { listings: WasteListing[] }) {
             </label>
             <select
               value={filters.status}
-              onChange={(e) => setFilters({ ...filters, status: e.target.value as WasteListingStatus | "" })}
+              onChange={(e) => {
+                setFilters({ ...filters, status: e.target.value as WasteListingStatus | "" })
+                pag.goToPage(1)
+              }}
               className="w-36 px-4 py-2.5 bg-canvas border border-border rounded-xl text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
             >
               {STATUS_FILTER_OPTIONS.map((opt) => (
@@ -792,7 +806,10 @@ function ListingsSection({ listings }: { listings: WasteListing[] }) {
                 type="text"
                 placeholder="Contoh: PET, Kardus..."
                 value={filters.material}
-                onChange={(e) => setFilters({ ...filters, material: e.target.value })}
+                onChange={(e) => {
+                  setFilters({ ...filters, material: e.target.value })
+                  pag.goToPage(1)
+                }}
                 className="w-full pl-10 pr-4 py-2.5 bg-canvas border border-border rounded-full text-sm text-ink focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
               />
             </div>
@@ -812,10 +829,14 @@ function ListingsSection({ listings }: { listings: WasteListing[] }) {
 
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredListings.map((listing) => (
+        {pag.pageItems.map((listing) => (
           <ListingCard key={listing.id} listing={listing} />
         ))}
       </div>
+
+      {filteredListings.length > 0 && (
+        <Pagination {...pag} onPageChange={pag.goToPage} />
+      )}
 
       {/* Empty state */}
       {filteredListings.length === 0 && (

@@ -50,7 +50,7 @@ export default function AppShell({
           </button>
 
           {userName ? (
-            <span className="w-7 h-7 rounded-full bg-sage text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0 ring-2 ring-mint">
+            <span className="w-7 h-7 rounded-full bg-ink text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0 ring-2 ring-canvas">
               {(userName.trim().charAt(0) || '?').toUpperCase()}
             </span>
           ) : (
@@ -84,7 +84,7 @@ export default function AppShell({
         <div className="relative h-full w-64">
           <button
             onClick={() => setOpen(false)}
-            className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full hover:bg-canvas text-muted hover:text-ink flex items-center justify-center transition-colors"
+            className="absolute top-2 right-3 z-10 w-8 h-8 rounded-full hover:bg-canvas text-muted hover:text-ink flex items-center justify-center transition-colors"
             aria-label="Tutup menu"
           >
             <X className="w-4 h-4" strokeWidth={2} />

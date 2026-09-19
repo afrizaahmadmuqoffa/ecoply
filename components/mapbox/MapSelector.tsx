@@ -243,7 +243,7 @@ const MapSelector = forwardRef<MapSelectorHandle, MapSelectorProps>(
         <div ref={mapContainer} className="w-full h-[400px] rounded-lg" />
 
         {showLoadingOverlay && (
-          <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center z-20">
+          <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center z-0">
             <div className="bg-white rounded-xl p-6 shadow-2xl flex flex-col items-center gap-3 max-w-xs mx-4">
               <Loader2 className="animate-spin h-10 w-10 text-green-600" />
               <div className="text-center">
@@ -255,7 +255,7 @@ const MapSelector = forwardRef<MapSelectorHandle, MapSelectorProps>(
         )}
 
         {selectedCoords && !showLoadingOverlay && (
-          <div className="absolute bottom-4 left-4 right-4 bg-white p-4 rounded-lg shadow-md border border-gray-200 max-h-48 overflow-y-auto z-10">
+          <div className="absolute bottom-4 left-4 right-4 bg-white p-4 rounded-lg shadow-md border border-gray-200 max-h-48 overflow-y-auto z-0">
             <p className="text-xs font-semibold text-gray-700 mb-2">Lokasi Terpilih:</p>
 
             <div className="space-y-2 mb-3">

@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import EditModal, { type FieldDef } from './EditModal'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import Pagination from '@/components/ui/Pagination'
+import usePagination from '@/lib/hooks/usePagination'
 
 type Column<T> = {
   key: keyof T | string
@@ -54,6 +56,9 @@ export default function MasterTable<T extends { id: string; is_active: boolean }
 
   const active = rows.filter((r) => r.is_active)
   const inactive = rows.filter((r) => !r.is_active)
+
+  const activePag = usePagination(active)
+  const inactivePag = usePagination(inactive)
 
   function CellValue({ row, col }: { row: T; col: Column<T> }) {
     if (col.render) return <>{col.render(row)}</>
@@ -128,7 +133,7 @@ export default function MasterTable<T extends { id: string; is_active: boolean }
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {active.map((row) => (
+              {activePag.pageItems.map((row) => (
                 <tr key={row.id} className="hover:bg-canvas/60 transition-colors">
                   {columns.map((c) => (
                     <td key={String(c.key)} className={`px-5 py-3 text-xs text-ink ${c.className ?? ''}`}>
@@ -165,6 +170,12 @@ export default function MasterTable<T extends { id: string; is_active: boolean }
           </table>
         </div>
 
+        {active.length > 0 && (
+          <div className="px-5 py-3 border-t border-border">
+            <Pagination {...activePag} onPageChange={activePag.goToPage} center />
+          </div>
+        )}
+
         {inactive.length > 0 && (
           <details className="border-t border-border">
             <summary className="px-5 py-2.5 text-xs text-muted cursor-pointer hover:bg-canvas/40 select-none flex items-center gap-2 font-medium">
@@ -174,7 +185,7 @@ export default function MasterTable<T extends { id: string; is_active: boolean }
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px] text-sm">
                 <tbody className="divide-y divide-border">
-                  {inactive.map((row) => (
+                  {inactivePag.pageItems.map((row) => (
                     <tr key={row.id} className="opacity-45">
                       {columns.map((c) => (
                         <td key={String(c.key)} className={`px-5 py-2.5 text-xs text-muted ${c.className ?? ''}`}>
@@ -186,6 +197,9 @@ export default function MasterTable<T extends { id: string; is_active: boolean }
                   ))}
                 </tbody>
               </table>
+            </div>
+            <div className="px-5 py-3 border-t border-border">
+              <Pagination {...inactivePag} onPageChange={inactivePag.goToPage} center />
             </div>
           </details>
         )}

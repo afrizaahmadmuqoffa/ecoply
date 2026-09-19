@@ -1,20 +1,11 @@
-'use client'
-
-import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { getCompanyProfilePublic } from '@/lib/supabase/actions/marketplace'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 import { INDUSTRY_OPTIONS } from '@/lib/constants/industries'
-import { AlertTriangle, ArrowLeft, BadgeCheck, ChevronRight, Clock, Download, Eye, FileText, Info, Lock, MapPin, X } from 'lucide-react'
-import { Skeleton } from '@/components/ui/skeletons'
+import { AlertTriangle, ArrowLeft, BadgeCheck, ChevronRight, Clock, Info, Lock, MapPin } from 'lucide-react'
 import ProfileHero from '@/components/profile/ProfileHero'
 import ProfileCardHeader from '@/components/profile/ProfileCardHeader'
-
-type Certification = {
-  name: string
-  file_url: string
-  uploaded_at: string
-}
+import CertificatesSection from '@/components/marketplace/CertificatesSection'
 
 type CompanyProfile = {
   id: string
@@ -29,93 +20,58 @@ type CompanyProfile = {
   created_at: string
 }
 
+type Certification = {
+  name: string
+  file_url: string
+  uploaded_at: string
+}
+
 const maskNpwp = (npwp: string) => {
   const clean = npwp.replace(/[^0-9]/g, '')
   if (clean.length < 6) return npwp
   return `••••••••-•••-${clean.slice(-3)}`
 }
 
-export default function CompanyProfilePage() {
-  const params = useParams<{ companyId: string }>()
-  const [data, setData] = useState<CompanyProfile | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [viewingCert, setViewingCert] = useState<Certification | null>(null)
+export const dynamic = 'force-dynamic'
 
-  useEffect(() => {
-    async function load() {
-      if (!params?.companyId) {
-        setError('Company tidak ditemukan')
-        setLoading(false)
-        return
+export default async function CompanyProfilePage({ params }: { params: Promise<{ companyId: string }> }) {
+  const { companyId } = await params
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  // Baca lewat view aman-PII (verified only), bukan base table.
+  const { data: row } = await supabase
+    .from('view_company_public')
+    .select('*')
+    .eq('id', companyId)
+    .maybeSingle()
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rowAny = row as any
+  const data: CompanyProfile | null = row
+    ? {
+        id: rowAny.id,
+        name: rowAny.name,
+        industry: rowAny.industry,
+        npwp: rowAny.npwp,
+        logo_url: rowAny.logo_url,
+        verification_status: rowAny.verification_status,
+        address_text: rowAny.address_text,
+        address: rowAny.address,
+        certifications: rowAny.certifications,
+        created_at: rowAny.created_at,
       }
-      const result = await getCompanyProfilePublic(params.companyId)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setData((result.data as any) || null)
-      if (result.error) setError(result.error)
-      setLoading(false)
-    }
-    load()
-  }, [params?.companyId])
+    : null
 
-  if (loading) {
-    return (
-      <div className="animate-fade-in">
-        <div className="flex items-center gap-3 mb-6">
-          <Skeleton className="h-4 w-40" />
-          <Skeleton className="h-4 w-24" />
-        </div>
-        <div className="bg-gradient-to-br from-mint/40 via-sage/5 to-surface border border-sage/20 rounded-[22px] p-6 sm:p-8 mb-6">
-          <div className="flex items-start gap-5 flex-wrap">
-            <Skeleton className="w-20 h-20 rounded-2xl flex-shrink-0" />
-            <div className="flex-1 min-w-0 space-y-3">
-              <Skeleton className="h-3 w-28" />
-              <Skeleton className="h-8 w-2/3 max-w-sm" />
-              <div className="flex gap-2">
-                <Skeleton className="h-7 w-32 rounded-full" />
-                <Skeleton className="h-7 w-24 rounded-full" />
-              </div>
-              <Skeleton className="h-4 w-1/2" />
-            </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <div className="lg:col-span-8 space-y-6">
-            <div className="bg-surface border border-border rounded-[18px] p-6 space-y-3">
-              <Skeleton className="h-5 w-44" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
-              <Skeleton className="h-4 w-3/4" />
-            </div>
-            <div className="bg-surface border border-border rounded-[18px] p-6 space-y-3">
-              <Skeleton className="h-5 w-36" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {[0, 1, 2].map((i) => (
-                  <Skeleton key={i} className="h-16 w-full rounded-2xl" />
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-surface border border-border rounded-[18px] p-6 space-y-4">
-              {[0, 1].map((i) => (
-                <Skeleton key={i} className="h-11 w-full" />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (error || !data) {
+  if (!data) {
     return (
       <div className="max-w-2xl mx-auto py-24 text-center">
         <div className="w-16 h-16 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="w-7 h-7 text-red-700" strokeWidth={1.8} />
         </div>
         <p className="text-sm font-bold text-ink mb-1">Company tidak ditemukan</p>
-        <p className="text-xs text-muted mb-6">{error}</p>
+        <p className="text-xs text-muted mb-6">Profil tidak tersedia atau belum terverifikasi.</p>
         <Link
           href="/recycler/marketplace"
           className="group inline-flex items-center gap-2 px-5 py-2.5 bg-sage hover:bg-sage-dark text-white text-sm font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-8px_rgba(85,158,123,0.4)]"
@@ -222,47 +178,7 @@ export default function CompanyProfilePage() {
           </div>
 
           {/* Certifications */}
-          <div className="bg-surface border border-border rounded-[18px] p-6 shadow-[0_8px_16px_-12px_rgba(11,31,22,0.06)]">
-            <ProfileCardHeader
-              icon={<BadgeCheck className="w-4 h-4" strokeWidth={2} />}
-              title="Sertifikasi"
-              subtitle="Dokumen bukti sertifikasi"
-              count={certifications.length}
-            />
-
-            {certifications.length > 0 ? (
-              <div className="space-y-2">
-                {certifications.map((cert) => (
-                  <div
-                    key={cert.file_url}
-                    className="flex items-center gap-3 p-4 bg-canvas border border-border rounded-xl hover:border-sage/40 transition-colors group"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-sage/20 text-sage-dark flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-5 h-5" strokeWidth={1.8} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-ink tracking-tight truncate">{cert.name}</p>
-                      <p className="text-[11px] text-muted mt-0.5 tabular-nums">
-                        {new Date(cert.uploaded_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => setViewingCert(cert)}
-                      className="group/btn inline-flex items-center gap-1 px-3 py-1.5 bg-sage hover:bg-sage-dark text-white text-[11px] font-semibold rounded-full transition-all hover:-translate-y-0.5 flex-shrink-0"
-                    >
-                      Lihat
-                      <Eye className="w-3 h-3" strokeWidth={2.5} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-canvas border border-border rounded-xl p-6 text-center">
-                <BadgeCheck className="w-8 h-8 text-muted mx-auto mb-2" strokeWidth={1.5} />
-                <p className="text-xs text-muted">Belum ada sertifikasi</p>
-              </div>
-            )}
-          </div>
+          <CertificatesSection certifications={certifications} accent="company" />
         </div>
 
         {/* Sidebar */}
@@ -286,13 +202,7 @@ export default function CompanyProfilePage() {
               <div className="flex justify-between gap-3">
                 <dt className="text-muted">Verifikasi</dt>
                 <dd className={`font-bold inline-flex items-center gap-1.5 ${data.verification_status === 'verified' ? 'text-sage-dark' : 'text-amber-700'}`}>
-                  {data.verification_status === 'verified' ? (
-                    <>
-                      Terverifikasi
-                    </>
-                  ) : (
-                    'Menunggu'
-                  )}
+                  {data.verification_status === 'verified' ? 'Terverifikasi' : 'Menunggu'}
                 </dd>
               </div>
               <div className="flex justify-between gap-3">
@@ -311,79 +221,8 @@ export default function CompanyProfilePage() {
               </p>
             </div>
           </div>
-
-          
         </aside>
       </div>
-
-      {/* Cert preview modal */}
-      {viewingCert && (
-        <div className="fixed inset-0 bg-ink/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-surface rounded-[22px] max-w-2xl w-full overflow-hidden shadow-[0_32px_64px_-16px_rgba(11,31,22,0.4)]">
-            <div className="px-6 py-5 border-b border-border flex items-start justify-between gap-3">
-              <div className="flex items-start gap-3 min-w-0">
-                <span className="w-10 h-10 rounded-lg bg-sage/20 text-sage-dark flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-5 h-5" strokeWidth={1.8} />
-                </span>
-                <div className="min-w-0">
-                  <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-sage-dark block mb-0.5">
-                    Sertifikasi
-                  </span>
-                  <h3 className="text-base font-extrabold text-ink tracking-tight truncate">
-                    {viewingCert.name}
-                  </h3>
-                  <p className="text-xs text-muted mt-0.5 tabular-nums">
-                    Diupload{' '}
-                    {new Date(viewingCert.uploaded_at).toLocaleDateString('id-ID', {
-                      day: 'numeric', month: 'long', year: 'numeric',
-                    })}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setViewingCert(null)}
-                className="w-9 h-9 rounded-full hover:bg-canvas text-muted hover:text-ink flex items-center justify-center transition-colors flex-shrink-0"
-              >
-                <X className="w-4 h-4" strokeWidth={2} />
-              </button>
-            </div>
-
-            <div className="p-6 bg-canvas flex justify-center items-center min-h-[300px] max-h-[60vh] overflow-hidden">
-              {viewingCert.file_url.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i) ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={viewingCert.file_url}
-                  alt={viewingCert.name}
-                  className="max-w-full max-h-[55vh] object-contain rounded-xl shadow-[0_8px_16px_-8px_rgba(11,31,22,0.12)]"
-                />
-              ) : (
-                <iframe
-                  src={viewingCert.file_url}
-                  title={viewingCert.name}
-                  className="w-full h-[55vh] rounded-xl border border-border bg-surface shadow-inner"
-                />
-              )}
-            </div>
-
-            <div className="px-6 py-5 border-t border-border flex justify-end gap-3">
-              <button
-                onClick={() => setViewingCert(null)}
-                className="px-5 py-2.5 border border-border hover:border-sage hover:text-sage-dark text-ink text-sm font-semibold rounded-full transition-all"
-              >
-                Tutup
-              </button>
-              <a
-                href={viewingCert.file_url}
-                download
-                className="group inline-flex items-center gap-2 px-5 py-2.5 bg-sage hover:bg-sage-dark text-white text-sm font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-8px_rgba(85,158,123,0.4)]"
-              >
-                <Download className="w-4 h-4" strokeWidth={2.5} />
-                Download
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
