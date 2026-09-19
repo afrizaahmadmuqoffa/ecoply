@@ -130,7 +130,7 @@ export default function ReviewPageLayout({
         </div>
 
         {/* Sidebar */}
-        <aside className="lg:col-span-4 lg:sticky lg:top-6 space-y-4">
+        <aside className="lg:col-span-4 lg:sticky lg:top-6 flex flex-col gap-4">
           {/* Review Actions */}
           <div className="order-2 bg-surface border border-border rounded-[18px] p-5 shadow-[0_12px_24px_-16px_rgba(11,31,22,0.06)]">
             <div className="flex items-center gap-2 mb-4">
