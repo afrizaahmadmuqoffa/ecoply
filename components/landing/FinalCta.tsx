@@ -30,12 +30,12 @@ export default function FinalCta() {
             <div className="relative z-10 mx-auto max-w-2xl">
               <Eyebrow dark>04 — Mulai</Eyebrow>
               <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-                Mulai perjalanan <em className="italic text-sage">kepatuhan</em>{' '}
+                Segera audit <em className="italic text-sage">kepatuhan</em>{' '}
                 &amp; <em className="italic text-sage">dekarbonisasi</em> Anda.
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-white/60 sm:text-base">
-                Daftar akun perusahaan atau fasilitas daur ulang — gratis, tanpa
-                kartu kredit.
+                Daftar sebagai perusahaan/umkm atau fasilitas daur ulang, gratis
+                dan tanpa kartu kredit.
               </p>
 
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">

@@ -7,7 +7,6 @@ import {
   ClipboardCheck,
   Leaf,
   Recycle,
-  Sparkles,
 } from 'lucide-react'
 import Magnetic from './Magnetic'
 
@@ -95,8 +94,8 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto mt-6 max-w-2xl text-base text-white/60 text-balance sm:text-lg"
         >
-          Audit dokumen berbasis AI, kalkulasi karbon Scope 1–3, dan marketplace
-          daur ulang — terpadu untuk perusahaan dan fasilitas daur ulang di
+          Audit dokumen ESG berbasis AI berdasarkan regulasi Indonesia, kalkulasi emisi karbon Scope 1–3, dan marketplace
+          ekonomi sirkular untuk perusahaan/umkm dan fasilitas daur ulang di
           Indonesia.
         </motion.p>
 

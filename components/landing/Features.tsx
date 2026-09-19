@@ -9,11 +9,11 @@ const features = [
   {
     icon: ClipboardCheck,
     title: 'Compliance AI',
-    desc: 'Audit dokumen ESG otomatis dengan referensi regulasi Indonesia terkini.',
+    desc: 'AI membaca dokumen ESG Anda dan mengecek kepatuhannya terhadap regulasi Indonesia yang berlaku.',
     points: [
-      'Penilaian kepatuhan otomatis',
-      'Rujukan regulasi yang diperbarui',
-      'Rekomendasi perbaikan yang jelas',
+      'Regulasi ditarik dari basis data yang bisa diperbarui kapan saja',
+      'Penilaian dipecah per pasal regulasi, bukan skor tunggal',
+      'Rekomendasi perbaikan ditulis untuk tiap pasal yang gagal',
     ],
   },
   {
@@ -29,11 +29,11 @@ const features = [
   {
     icon: Recycle,
     title: 'Circular Marketplace',
-    desc: 'Hubungkan limbah perusahaan dengan fasilitas daur ulang terdekat — transaksi tercatat rapi.',
+    desc: 'Perusahaan mendaftarkan limbah, fasilitas daur ulang menawar atau menerima permintaan pickup langsung.',
     points: [
-      'Listing & penawaran harga',
-      'Negosiasi langsung antar peran',
-      'Sertifikat transaksi digital',
+      'Fasilitas daur ulang bisa menawar listing Anda, atau Anda kirim permintaan pickup langsung',
+      'Negosiasi langsung antara perusahaan/umkm dan fasilitas daur ulang',
+      'Sertifikat transaksi digital untuk tiap kesepakatan',
     ],
   },
 ]
@@ -53,7 +53,7 @@ export default function Features() {
               keberlanjutan.
             </h2>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted sm:text-base">
-              Dari kepatuhan hingga transaksi sirkular — ECOPLY menutup celah
+              Dari kepatuhan, kalkulasi karbon emisi, hingga transaksi sirkular. ECOPLY menutup celah
               yang biasanya terpisah di banyak platform.
             </p>
           </div>

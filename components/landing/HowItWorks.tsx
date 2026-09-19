@@ -8,12 +8,12 @@ const steps = [
   {
     n: '01',
     title: 'Daftar & pilih peran',
-    desc: 'Buat akun perusahaan atau fasilitas daur ulang dalam hitungan menit.',
+    desc: 'Buat akun perusahaan/umkm atau fasilitas daur ulang.',
   },
   {
     n: '02',
     title: 'Audit dokumen',
-    desc: 'Unggah dokumen ESG — AI membaca dan menilai kepatuhan terhadap regulasi.',
+    desc: 'Unggah dokumen ESG, AI membaca dan menilai kepatuhan terhadap regulasi.',
   },
   {
     n: '03',
@@ -23,7 +23,7 @@ const steps = [
   {
     n: '04',
     title: 'Transaksi sirkular',
-    desc: 'Daftarkan limbah, ajukan penawaran, dan terbitkan sertifikat transaksi.',
+    desc: 'Daftarkan limbah, terima penawaran atau kirim permintaan pickup, lalu dapatkan sertifikat transaksi.',
   },
 ]
 

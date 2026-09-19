@@ -5,87 +5,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aktivasi Akun ECOPLY</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f9fafb;padding:40px 16px;">
+<body style="margin:0;padding:0;background-color:#EEF1EC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#EEF1EC;padding:40px 16px;">
     <tr>
       <td align="center">
         <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
 
           <!-- Header / Brand -->
           <tr>
-            <td align="center" style="padding-bottom:24px;">
-              <p style="margin:0;font-size:20px;font-weight:700;color:#111827;letter-spacing:-0.3px;">ECOPLY</p>
-              <p style="margin:4px 0 0;font-size:12px;color:#9ca3af;">Platform RegTech & Dekarbonisasi</p>
+            <td align="center" style="padding-bottom:28px;">
+              <p style="margin:0;font-size:26px;font-weight:800;color:#0B1F16;letter-spacing:-0.5px;line-height:1;display:inline-block;vertical-align:middle;">
+                ECOPLY
+              </p>
+              <p style="margin:8px 0 0;font-size:10px;font-weight:700;color:#3F8263;letter-spacing:0.18em;text-transform:uppercase;">
+                Platform RegTech &amp; Dekarbonisasi
+              </p>
             </td>
           </tr>
 
           <!-- Card -->
           <tr>
-            <td style="background:#ffffff;border-radius:12px;border:1px solid #e5e7eb;padding:40px 36px;">
+            <td style="background:#FFFFFF;border-radius:16px;border:1px solid #E2E8DF;box-shadow:0 10px 28px -14px rgba(11,31,22,0.14);overflow:hidden;">
 
-              <!-- Icon -->
+              <!-- Accent stripe (gradasi sage -> mint) -->
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td align="center" style="padding-bottom:24px;">
-                    <div style="width:56px;height:56px;background:#dcfce7;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;">
-                      <span style="font-size:24px;">✉️</span>
-                    </div>
-                  </td>
+                  <td style="height:4px;background:linear-gradient(90deg,#559E7B 0%,#DCEADF 100%);font-size:0;line-height:0;">&nbsp;</td>
                 </tr>
               </table>
 
-              <!-- Title -->
-              <p style="margin:0 0 8px;font-size:18px;font-weight:600;color:#111827;text-align:center;">
-                Konfirmasi Email Anda
-              </p>
-              <p style="margin:0 0 28px;font-size:14px;color:#6b7280;text-align:center;line-height:1.6;">
-                Terima kasih sudah mendaftar di ECOPLY.<br />
-                Klik tombol di bawah untuk mengaktifkan akun dan melanjutkan pendaftaran.
-              </p>
-
-              <!-- CTA Button -->
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td align="center" style="padding-bottom:28px;">
-                    <a href="{{ .ConfirmationURL }}"
-                       style="display:inline-block;background-color:#16a34a;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;padding:12px 32px;border-radius:8px;letter-spacing:0.1px;">
-                      Aktifkan Akun Saya →
-                    </a>
+                  <td style="padding:36px 32px 32px;">
+
+                    <!-- Icon -->
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="padding-bottom:22px;">
+                          <table cellpadding="0" cellspacing="0" align="center">
+                            <tr>
+                              <td width="64" height="64" align="center" valign="middle"
+                                  style="width:64px;height:64px;background:#DCEADF;border-radius:50%;font-family:Arial,Helvetica,sans-serif;font-size:28px;font-weight:700;color:#3F8263;line-height:64px;">
+                                ✓
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Kicker -->
+                    <p style="margin:0 0 8px;text-align:center;font-size:10px;font-weight:700;color:#3F8263;letter-spacing:0.18em;text-transform:uppercase;">
+                      Aktivasi Akun
+                    </p>
+
+                    <!-- Title -->
+                    <p style="margin:0 0 12px;text-align:center;font-size:22px;font-weight:800;color:#0B1F16;letter-spacing:-0.3px;line-height:1.25;">
+                      Konfirmasi Email Anda
+                    </p>
+
+                    <!-- Body -->
+                    <p style="margin:0 0 30px;text-align:center;font-size:14px;color:#5D6B61;line-height:1.7;letter-spacing:0.1px;">
+                      Terima kasih sudah mendaftar di <strong style="color:#0B1F16;">ECOPLY</strong>.<br />
+                      Klik tombol di bawah untuk mengaktifkan akun dan melanjutkan pendaftaran.
+                    </p>
+
+                    <!-- CTA Button -->
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="padding-bottom:26px;">
+                          <a href="{{ .ConfirmationURL }}"
+                             style="display:inline-block;background-color:#559E7B;color:#FFFFFF;font-size:14px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:9999px;letter-spacing:0.2px;box-shadow:0 8px 16px -8px rgba(85,158,123,0.5);">
+                            Aktifkan Akun Saya&nbsp;&#8594;
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Divider -->
+                    <hr style="border:none;border-top:1px solid #E2E8DF;margin:0 0 22px;" />
+
+                    <!-- Fallback link -->
+                    <p style="margin:0 0 8px;font-size:12px;color:#5D6B61;text-align:center;">
+                      Tombol tidak berfungsi? Salin link berikut ke browser:
+                    </p>
+                    <p style="margin:0;font-size:11px;color:#5D6B61;text-align:center;word-break:break-all;">
+                      <a href="{{ .ConfirmationURL }}" style="color:#3F8263;text-decoration:underline;">
+                        {{ .ConfirmationURL }}
+                      </a>
+                    </p>
+
                   </td>
                 </tr>
               </table>
-
-              <!-- Divider -->
-              <hr style="border:none;border-top:1px solid #f3f4f6;margin:0 0 24px;" />
-
-              <!-- Fallback link -->
-              <p style="margin:0 0 8px;font-size:12px;color:#9ca3af;text-align:center;">
-                Tombol tidak berfungsi? Salin link berikut ke browser:
-              </p>
-              <p style="margin:0;font-size:11px;color:#6b7280;text-align:center;word-break:break-all;">
-                <a href="{{ .ConfirmationURL }}" style="color:#16a34a;text-decoration:underline;">
-                  {{ .ConfirmationURL }}
-                </a>
-              </p>
-
             </td>
           </tr>
 
           <!-- Security note -->
           <tr>
             <td style="padding:20px 0 0;text-align:center;">
-              <p style="margin:0;font-size:11px;color:#9ca3af;line-height:1.6;">
-                Link ini hanya berlaku selama <strong>1 jam</strong>.<br />
-                Jika Anda tidak mendaftar, abaikan email ini.
+              <p style="margin:0;font-size:11px;color:#5D6B61;line-height:1.7;">
+                Link ini hanya berlaku selama <strong style="color:#0B1F16;">1 jam</strong>.<br />
+                Jika Anda tidak mendaftar di ECOPLY, Anda dapat mengabaikan email ini.
               </p>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="padding:24px 0 0;text-align:center;border-top:1px solid #e5e7eb;margin-top:24px;">
-              <p style="margin:0;font-size:11px;color:#d1d5db;">
-                © 2026 ECOPLY · Platform ESG & Dekarbonisasi Indonesia
+            <td style="padding:22px 0 0;text-align:center;border-top:1px solid #E2E8DF;">
+              <p style="margin:0;font-size:11px;color:#79887D;letter-spacing:0.2px;">
+                &copy; 2026 ECOPLY &middot; Platform ESG &amp; Dekarbonisasi Indonesia
               </p>
             </td>
           </tr>

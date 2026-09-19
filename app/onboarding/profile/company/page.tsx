@@ -27,7 +27,7 @@ export default async function CompanyProfilePage() {
 
   return (
     <div className="min-h-screen bg-canvas flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-2xl animate-fade-in">
         {/* Brand mark */}
         <div className="flex justify-center mb-8">
           <Logo height={70} />
