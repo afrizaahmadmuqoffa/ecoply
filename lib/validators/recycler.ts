@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { stripDigits, isValidNpwp, isValidNib } from '@/lib/utils/idnumbers'
 
 export const certificationSchema = z.object({
   name: z.string().min(1, 'Nama sertifikasi wajib diisi'),
@@ -11,11 +12,12 @@ export const upsertRecyclerDetailsSchema = z.object({
   full_name: z.string().min(2, 'Nama lengkap minimal 2 karakter').max(100),
   npwp: z
     .string()
-    .refine(
-      (v) => /^(?:\d{15}|\d{16})$/.test(v.replace(/\D/g, '')),
-      'Format NPWP tidak valid (15 atau 16 digit)',
-    ),
-  nib: z.string().regex(/^\d{13}$/, 'NIB harus terdiri dari 13 digit angka'),
+    .transform(stripDigits)
+    .refine(isValidNpwp, 'Format NPWP tidak valid (15 atau 16 digit)'),
+  nib: z
+    .string()
+    .transform(stripDigits)
+    .refine(isValidNib, 'NIB harus terdiri dari 13 digit angka'),
   accepted_materials: z.array(z.string()).min(1, 'Pilih minimal 1 jenis material yang diterima'),
   capacity_per_month: z.number().positive('Kapasitas harus lebih dari 0'),
   capacity_unit: z.enum(['kg', 'ton']).default('kg'),

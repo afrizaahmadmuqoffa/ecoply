@@ -8,6 +8,8 @@ import { INDUSTRY_OPTIONS, OTHER_INDUSTRY_VALUE } from "@/lib/constants/industri
 import MapSelector, {
   MapSelectorHandle,
 } from "@/components/mapbox/MapSelector";
+import IdNumberInput from "@/components/ui/IdNumberInput";
+import { isValidNik, isValidNpwp, isValidNib } from "@/lib/utils/idnumbers";
 import { Loader2, MapPin, AlertTriangle, ArrowRight } from "lucide-react";
 
 const inputCls =
@@ -95,21 +97,19 @@ export default function CompanyOnboardingForm() {
     }
 
     if (form.segment === "umkm") {
-      if (!/^\d{16}$/.test((form.nik || "").replace(/\D/g, ""))) {
+      if (!isValidNik(form.nik || "")) {
         setError("NIK wajib diisi untuk UMKM (16 digit).");
         setLoading(false);
         return;
       }
     } else {
-      if (
-        !/^(?:\d{15}|\d{16})$/.test((form.npwp || "").replace(/\D/g, ""))
-      ) {
+      if (!isValidNpwp(form.npwp || "")) {
         setError("Format NPWP tidak valid (15 atau 16 digit).");
         setLoading(false);
         return;
       }
 
-      if (!/^\d{13}$/.test((form.nib || "").trim())) {
+      if (!isValidNib(form.nib || "")) {
         setError("NIB harus terdiri dari 13 digit angka.");
         setLoading(false);
         return;
@@ -306,71 +306,35 @@ export default function CompanyOnboardingForm() {
           {geoError && <p className="mt-2 text-sm text-red-600">{geoError}</p>}
         </div>
 
-        <div>
-          <label htmlFor="npwp" className={labelCls}>
-            NPWP{" "}
-            {form.segment !== "umkm" && (
-              <span className="text-sage-dark">*</span>
-            )}{" "}
-            <span className="text-muted font-normal normal-case tracking-normal">
-              {form.segment === "umkm" ? "(opsional)" : ""}
-            </span>
-          </label>
-          <input
-            id="npwp"
-            type="text"
-            value={form.npwp || ""}
-            onChange={(e) => setForm((f) => ({ ...f, npwp: e.target.value }))}
-            className={`${inputCls} font-mono`}
-            placeholder="NPWP (15/16 digit)"
-          />
-          <p className="text-xs text-muted mt-1.5 flex items-center gap-1.5">
-            <span className="inline-block w-1 h-1 rounded-full bg-sage" />
-            Contoh: 01.234.567.8-901.234
-          </p>
-        </div>
+        <IdNumberInput
+          kind="npwp"
+          label="NPWP"
+          value={form.npwp || ""}
+          onChange={(v) => setForm((f) => ({ ...f, npwp: v }))}
+          required={form.segment !== "umkm"}
+          optionalHint={form.segment === "umkm" ? "opsional" : undefined}
+          size="lg"
+        />
 
-        <div>
-          <label htmlFor="nib" className={labelCls}>
-            NIB{" "}
-            {form.segment !== "umkm" && (
-              <span className="text-sage-dark">*</span>
-            )}{" "}
-            <span className="text-muted font-normal normal-case tracking-normal">
-              {form.segment === "umkm" ? "(opsional)" : ""}
-            </span>
-          </label>
-          <input
-            id="nib"
-            type="text"
-            inputMode="numeric"
-            value={form.nib || ""}
-            onChange={(e) => setForm((f) => ({ ...f, nib: e.target.value }))}
-            className={`${inputCls} font-mono`}
-            placeholder="13 digit NIB"
-            maxLength={13}
-          />
-          <p className="text-xs text-muted mt-1.5 flex items-center gap-1.5">
-            <span className="inline-block w-1 h-1 rounded-full bg-sage" />
-            Nomor Induk Berusaha (OSS) — 13 digit
-          </p>
-        </div>
+        <IdNumberInput
+          kind="nib"
+          label="NIB"
+          value={form.nib || ""}
+          onChange={(v) => setForm((f) => ({ ...f, nib: v }))}
+          required={form.segment !== "umkm"}
+          optionalHint={form.segment === "umkm" ? "opsional" : undefined}
+          size="lg"
+        />
 
         {form.segment === "umkm" && (
-          <div>
-            <label htmlFor="nik" className={labelCls}>
-              NIK <span className="text-sage-dark">*</span>{" "}
-            </label>
-            <input
-              id="nik"
-              type="text"
-              value={form.nik || ""}
-              onChange={(e) => setForm((f) => ({ ...f, nik: e.target.value }))}
-              className={inputCls}
-              placeholder="16 digit NIK"
-              maxLength={16}
-            />
-          </div>
+          <IdNumberInput
+            kind="nik"
+            label="NIK"
+            value={form.nik || ""}
+            onChange={(v) => setForm((f) => ({ ...f, nik: v }))}
+            required
+            size="lg"
+          />
         )}
 
         {error && (

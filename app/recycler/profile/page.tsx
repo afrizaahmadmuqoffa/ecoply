@@ -36,6 +36,8 @@ import MapSelector, {
 } from "@/components/mapbox/MapSelector";
 import type { Certification } from "@/lib/validators/recycler";
 import { parsePostGISLocation } from "@/lib/utils/postgis";
+import { stripDigits, isValidNpwp, isValidNib } from "@/lib/utils/idnumbers";
+import IdNumberInput from "@/components/ui/IdNumberInput";
 import { SkeletonHero, SkeletonProfile } from "@/components/ui/skeletons";
 
 export default function RecyclerProfilePage() {
@@ -88,8 +90,8 @@ export default function RecyclerProfilePage() {
         setFormData({
           full_name: data.full_name || "",
           name: data.name || "",
-          npwp: (data as any).npwp || "",
-          nib: (data as any).nib || "",
+          npwp: stripDigits((data as any).npwp) || "",
+          nib: stripDigits((data as any).nib) || "",
           accepted_materials: data.accepted_materials || [],
           capacity_per_month: data.capacity_per_month?.toString() || "",
           capacity_unit: "kg",
@@ -213,14 +215,12 @@ export default function RecyclerProfilePage() {
       return;
     }
 
-    if (!/^\d{13}$/.test(formData.nib.trim())) {
+    if (!isValidNib(formData.nib)) {
       setError("NIB harus terdiri dari 13 digit angka.");
       return;
     }
 
-    if (
-      !/^(?:\d{15}|\d{16})$/.test(formData.npwp.trim().replace(/\D/g, ""))
-    ) {
+    if (!isValidNpwp(formData.npwp)) {
       setError("Format NPWP tidak valid (15 atau 16 digit).");
       return;
     }
@@ -427,46 +427,26 @@ export default function RecyclerProfilePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">
-                NPWP <span className="text-sage-dark">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.npwp}
-                onChange={(e) =>
-                  setFormData({ ...formData, npwp: e.target.value })
-                }
-                className="w-full px-4 py-2.5 bg-canvas border border-border rounded-xl text-sm text-ink font-mono focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
-                placeholder="NPWP (15/16 digit)"
-              />
-              <p className="text-[10px] text-muted mt-1.5">
-                Contoh: 01.234.567.8-901.234
-              </p>
-            </div>
-            <div>
-              <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">
-                NIB <span className="text-sage-dark">*</span>
-              </label>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={formData.nib}
-                onChange={(e) =>
-                  setFormData({ ...formData, nib: e.target.value })
-                }
-                required
-                pattern="[0-9]{13}"
-                maxLength={13}
-                className="w-full px-4 py-2.5 bg-canvas border border-border rounded-xl text-sm text-ink font-mono focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
-                placeholder="13 digit NIB"
-                title="NIB terdiri dari 13 digit angka"
-              />
-              <p className="text-[10px] text-muted mt-1.5">
-                Nomor Induk Berusaha (OSS) — 13 digit angka
-              </p>
-            </div>
+            <IdNumberInput
+              kind="npwp"
+              label="NPWP"
+              value={formData.npwp}
+              onChange={(v) =>
+                setFormData({ ...formData, npwp: v })
+              }
+              required
+              size="md"
+            />
+            <IdNumberInput
+              kind="nib"
+              label="NIB"
+              value={formData.nib}
+              onChange={(v) =>
+                setFormData({ ...formData, nib: v })
+              }
+              required
+              size="md"
+            />
           </div>
         </div>
 

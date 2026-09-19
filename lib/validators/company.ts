@@ -1,4 +1,10 @@
 import { z } from 'zod'
+import {
+  stripDigits,
+  isValidNpwp,
+  isValidNib,
+  isValidNik,
+} from '@/lib/utils/idnumbers'
 
 export const certificationSchema = z.object({
   name: z.string().min(1, 'Nama sertifikasi wajib diisi'),
@@ -13,20 +19,25 @@ export const updateCompanyProfileSchema = z
     industry: z.string().min(2, 'Jenis industri wajib diisi').max(100),
     npwp: z
       .string()
+      .transform(stripDigits)
       .refine(
-        (v) =>
-          v === '' || /^(?:\d{15}|\d{16})$/.test(v.replace(/\D/g, '')),
+        (v) => v === '' || isValidNpwp(v),
         'Format NPWP tidak valid (15 atau 16 digit)',
       ),
     nib: z
       .string()
+      .transform(stripDigits)
       .refine(
-        (v) => v === '' || /^\d{13}$/.test(v),
+        (v) => v === '' || isValidNib(v),
         'NIB harus terdiri dari 13 digit angka',
       ),
     nik: z
       .string()
-      .regex(/^\d{16}$/, 'NIK harus terdiri dari 16 digit angka')
+      .transform(stripDigits)
+      .refine(
+        (v) => v === '' || isValidNik(v),
+        'NIK harus terdiri dari 16 digit angka',
+      )
       .optional()
       .or(z.literal('')),
     location_lat: z.number().min(-90).max(90),

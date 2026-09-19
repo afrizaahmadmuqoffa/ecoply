@@ -14,6 +14,8 @@ import MapSelector, {
 } from '@/components/mapbox/MapSelector'
 import type { Certification } from '@/lib/validators/company'
 import { parsePostGISLocation } from '@/lib/utils/postgis'
+import { stripDigits, isValidNik, isValidNpwp, isValidNib } from '@/lib/utils/idnumbers'
+import IdNumberInput from '@/components/ui/IdNumberInput'
 import { SkeletonHero, SkeletonProfile } from '@/components/ui/skeletons'
 import {
   AlertTriangle,
@@ -91,9 +93,9 @@ export default function CompanyProfilePage() {
           name: data.name || '',
           segment: raw.segment || '',
           industry: known ? industry : industry ? OTHER_INDUSTRY_VALUE : '',
-          npwp: data.npwp || '',
-          nib: raw.nib || '',
-          nik: raw.nik || '',
+          npwp: stripDigits(data.npwp) || '',
+          nib: stripDigits(raw.nib) || '',
+          nik: stripDigits(raw.nik) || '',
           address_text: data.address_text || '',
           certifications: (data.certifications || []) as Certification[],
           pending_certs: [],
@@ -200,19 +202,17 @@ export default function CompanyProfilePage() {
     }
 
     if (formData.segment === 'umkm') {
-      if (!/^\d{16}$/.test(formData.nik.trim().replace(/\D/g, ''))) {
+      if (!isValidNik(formData.nik)) {
         setError('NIK wajib diisi untuk UMKM (16 digit).')
         return
       }
     } else {
-      if (
-        !/^(?:\d{15}|\d{16})$/.test(formData.npwp.trim().replace(/\D/g, ''))
-      ) {
+      if (!isValidNpwp(formData.npwp)) {
         setError('Format NPWP tidak valid (15 atau 16 digit).')
         return
       }
 
-      if (!/^\d{13}$/.test(formData.nib.trim())) {
+      if (!isValidNib(formData.nib)) {
         setError('NIB harus terdiri dari 13 digit angka.')
         return
       }
@@ -456,85 +456,48 @@ export default function CompanyProfilePage() {
               </p>
             </div>
 
-            <div>
-              <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">
-                NPWP{' '}
-                {formData.segment === 'umkm' ? (
-                  <span className="text-muted font-normal">
-                    (opsional untuk UMKM)
-                  </span>
-                ) : (
-                  <span className="text-sage-dark">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                value={formData.npwp}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, npwp: e.target.value }))
-                }
-                className="w-full px-4 py-2.5 bg-canvas border border-border rounded-xl text-sm text-ink font-mono focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
-                placeholder="NPWP (15/16 digit)"
-              />
-              <p className="text-[10px] text-muted mt-1.5">
-                Contoh: 01.234.567.8-901.234
-              </p>
-            </div>
+            <IdNumberInput
+              kind="npwp"
+              label="NPWP"
+              value={formData.npwp}
+              onChange={(v) =>
+                setFormData((prev) => ({ ...prev, npwp: v }))
+              }
+              required={formData.segment !== 'umkm'}
+              optionalHint={
+                formData.segment === 'umkm' ? 'opsional untuk UMKM' : undefined
+              }
+              size="md"
+            />
 
-            <div>
-              <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">
-                NIB{' '}
-                {formData.segment === 'umkm' ? (
-                  <span className="text-muted font-normal">
-                    (opsional untuk UMKM)
-                  </span>
-                ) : (
-                  <span className="text-sage-dark">*</span>
-                )}
-              </label>
-              <input
-                type="text"
-                inputMode="numeric"
-                value={formData.nib}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, nib: e.target.value }))
-                }
-                required={formData.segment !== 'umkm'}
-                pattern="[0-9]{13}"
-                maxLength={13}
-                className="w-full px-4 py-2.5 bg-canvas border border-border rounded-xl text-sm text-ink font-mono focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
-                placeholder="13 digit NIB"
-                title="NIB terdiri dari 13 digit angka"
-              />
-              <p className="text-[10px] text-muted mt-1.5">
-                Nomor Induk Berusaha (OSS) — 13 digit angka
-              </p>
-            </div>
+            <IdNumberInput
+              kind="nib"
+              label="NIB"
+              value={formData.nib}
+              onChange={(v) =>
+                setFormData((prev) => ({ ...prev, nib: v }))
+              }
+              required={formData.segment !== 'umkm'}
+              optionalHint={
+                formData.segment === 'umkm' ? 'opsional untuk UMKM' : undefined
+              }
+              size="md"
+            />
 
             {(formData.segment === 'umkm' || formData.nik) && (
-              <div>
-                <label className="block text-[10px] font-bold tracking-[0.14em] uppercase text-ink mb-1.5">
-                  NIK{' '}
-                  {formData.segment === 'umkm' ? (
-                    <span className="text-sage-dark">*</span>
-                  ) : null}{' '}
-                  <span className="text-muted font-normal">
-                    {formData.segment === 'umkm'
-                      ? '(wajib untuk UMKM)'
-                      : '(opsional)'}
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.nik}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, nik: e.target.value }))
-                  }
-                  className="w-full px-4 py-2.5 bg-canvas border border-border rounded-xl text-sm text-ink font-mono focus:outline-none focus:border-sage focus:ring-2 focus:ring-sage/20 transition-all"
-                  placeholder="16 digit NIK"
-                  maxLength={16}
-                />
-              </div>
+              <IdNumberInput
+                kind="nik"
+                label="NIK"
+                value={formData.nik}
+                onChange={(v) =>
+                  setFormData((prev) => ({ ...prev, nik: v }))
+                }
+                required={formData.segment === 'umkm'}
+                optionalHint={
+                  formData.segment !== 'umkm' ? 'opsional' : undefined
+                }
+                size="md"
+              />
             )}
           </div>
         </div>

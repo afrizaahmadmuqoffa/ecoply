@@ -1,4 +1,10 @@
 import { z } from 'zod'
+import {
+  stripDigits,
+  isValidNpwp,
+  isValidNib,
+  isValidNik,
+} from '@/lib/utils/idnumbers'
 
 export const signUpSchema = z.object({
   email: z.string().email('Email tidak valid'),
@@ -29,20 +35,25 @@ export const companyOnboardingSchema = z
     address: z.string().min(10, 'Alamat terlalu singkat').max(500).optional().or(z.literal('')),
     npwp: z
       .string()
+      .transform(stripDigits)
       .refine(
-        (v) =>
-          v === '' || /^(?:\d{15}|\d{16})$/.test(v.replace(/\D/g, '')),
+        (v) => v === '' || isValidNpwp(v),
         'Format NPWP tidak valid (15 atau 16 digit)',
       ),
     nib: z
       .string()
+      .transform(stripDigits)
       .refine(
-        (v) => v === '' || /^\d{13}$/.test(v),
+        (v) => v === '' || isValidNib(v),
         'NIB harus terdiri dari 13 digit angka',
       ),
     nik: z
       .string()
-      .regex(/^\d{16}$/, 'NIK harus terdiri dari 16 digit angka')
+      .transform(stripDigits)
+      .refine(
+        (v) => v === '' || isValidNik(v),
+        'NIK harus terdiri dari 16 digit angka',
+      )
       .optional()
       .or(z.literal('')),
     // ✅ Ubah: koordinat wajib jika salah satu ada, address_text optional
@@ -89,11 +100,12 @@ export const recyclerOnboardingSchema = z.object({
   address: z.string().min(10, 'Alamat terlalu singkat').max(500).optional().or(z.literal('')),
   npwp: z
     .string()
-    .refine(
-      (v) => /^(?:\d{15}|\d{16})$/.test(v.replace(/\D/g, '')),
-      'Format NPWP tidak valid (15 atau 16 digit)',
-    ),
-  nib: z.string().regex(/^\d{13}$/, 'NIB harus terdiri dari 13 digit angka'),
+    .transform(stripDigits)
+    .refine(isValidNpwp, 'Format NPWP tidak valid (15 atau 16 digit)'),
+  nib: z
+    .string()
+    .transform(stripDigits)
+    .refine(isValidNib, 'NIB harus terdiri dari 13 digit angka'),
   capacityKgPerMonth: z.coerce
     .number()
     .positive('Kapasitas harus positif')
