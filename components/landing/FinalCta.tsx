@@ -1,7 +1,4 @@
-'use client'
-
 import Link from 'next/link'
-import { motion } from 'motion/react'
 import { ArrowRight } from 'lucide-react'
 import Eyebrow from './Eyebrow'
 import Magnetic from './Magnetic'
@@ -14,16 +11,12 @@ export default function FinalCta() {
         <Reveal>
           <div className="bg-grain relative overflow-hidden rounded-[28px] bg-ink px-6 py-20 text-center text-white sm:px-16 sm:py-24">
             {/* Aurora */}
-            <motion.div
+            <div
               className="pointer-events-none absolute left-1/2 top-[-40%] h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-sage/30 blur-[120px]"
-              animate={{ y: [0, 30, 0], scale: [1, 1.12, 1] }}
-              transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
               aria-hidden
             />
-            <motion.div
+            <div
               className="pointer-events-none absolute bottom-[-45%] left-[10%] h-[22rem] w-[22rem] rounded-full bg-mint/15 blur-[120px]"
-              animate={{ y: [0, -30, 0] }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
               aria-hidden
             />
 

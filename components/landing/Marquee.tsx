@@ -1,5 +1,3 @@
-'use client'
-
 const words = [
   'Compliance AI',
   'Carbon Accounting',

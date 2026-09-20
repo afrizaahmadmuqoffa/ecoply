@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "motion/react";
 import { Sparkles } from "lucide-react";
 import Eyebrow from "./Eyebrow";
 import Reveal from "./Reveal";
@@ -19,16 +16,12 @@ export default function Tech() {
       className="bg-grain relative scroll-mt-24 overflow-hidden bg-ink py-24 text-white sm:py-32"
     >
       {/* Aurora */}
-      <motion.div
+      <div
         className="pointer-events-none absolute right-[-15%] top-[-20%] h-[30rem] w-[30rem] rounded-full bg-sage/20 blur-[140px]"
-        animate={{ x: [0, -60, 0], y: [0, 50, 0] }}
-        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
         aria-hidden
       />
-      <motion.div
+      <div
         className="pointer-events-none absolute bottom-[-25%] left-[-10%] h-[26rem] w-[26rem] rounded-full bg-mint/10 blur-[140px]"
-        animate={{ x: [0, 50, 0], y: [0, -40, 0] }}
-        transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
         aria-hidden
       />
 
@@ -40,12 +33,7 @@ export default function Tech() {
               className="absolute inset-0 rounded-full border border-white/15"
               aria-hidden
             />
-            <motion.div
-              className="absolute inset-0"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
-              aria-hidden
-            >
+            <div className="absolute inset-0" aria-hidden>
               {orbitDots.map((dot) => (
                 <span
                   key={dot.delay}
@@ -57,7 +45,7 @@ export default function Tech() {
                   }}
                 />
               ))}
-            </motion.div>
+            </div>
             <span
               className="absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sage"
               aria-hidden
