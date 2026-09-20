@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Check, Eye, FileText, Info, Loader2, Trash2 } from 'lucide-react'
+import { Archive, Check, Eye, FileText, Info, Loader2 } from 'lucide-react'
 import { archiveRegulation } from '@/lib/supabase/actions/admin'
 import Pagination from '@/components/ui/Pagination'
 import usePagination from '@/lib/hooks/usePagination'
@@ -242,7 +242,7 @@ export default function RegulationList({ title, regulations, count, muted = fals
                         {archiving === reg.id ? (
                           <Loader2 className="animate-spin w-3 h-3" />
                         ) : (
-                          <Trash2 className="w-3 h-3" strokeWidth={2} />
+                          <Archive className="w-3 h-3" strokeWidth={2} />
                         )}
                         Arsipkan
                       </button>

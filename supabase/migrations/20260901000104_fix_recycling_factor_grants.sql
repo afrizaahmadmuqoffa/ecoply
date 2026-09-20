@@ -1,0 +1,15 @@
+-- ============================================================
+-- Fase 7 (m66) merevoke SELURUH privilege tabel dari role
+-- authenticated dan hanya menyisakan SELECT, padahal policy
+-- RLS admin-write tetap dibutuhkan untuk aksi tulis dari
+-- halaman Admin → Carbon Config → tab "Daur Ulang".
+--
+-- Di PostgreSQL, privilege tabel dicek SEBELUM RLS, sehingga
+-- INSERT/UPDATE/DELETE via server action (session authenticated)
+-- gagal dengan: "permission denied for table
+-- recycling_avoided_factors".
+--
+-- Fix: pulihkan privilege DML tabel untuk authenticated.
+-- Keamanan tetap dikendalikan policy RLS (is_admin) di m66.
+-- ============================================================
+GRANT INSERT, UPDATE, DELETE ON public.recycling_avoided_factors TO authenticated;

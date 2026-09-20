@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown, LayoutGrid, Pencil, Trash2 } from 'lucide-react'
+import { Ban, ChevronDown, LayoutGrid, Pencil } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import EditModal, { type FieldDef } from './EditModal'
@@ -157,7 +157,7 @@ export default function MasterTable<T extends { id: string; is_active: boolean }
                             onClick={() => setDeactivateRow(row)}
                             className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-muted hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
                           >
-                            <Trash2 className="w-3 h-3" strokeWidth={2} />
+                            <Ban className="w-3 h-3" strokeWidth={2} />
                             Nonaktifkan
                           </button>
                         )}
