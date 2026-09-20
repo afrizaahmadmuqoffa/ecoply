@@ -50,9 +50,6 @@ export default function RegulationForm() {
   return (
     <div className="bg-surface border border-border rounded-[18px] p-6 shadow-[0_12px_24px_-16px_rgba(11,31,22,0.06)]">
       {/* Header */}
-      <span className="inline-block text-[11px] font-bold tracking-[0.18em] uppercase text-sage-dark mb-2">
-        02 — Upload Baru
-      </span>
       <h2 className="text-xl font-extrabold text-ink tracking-tight mb-1">
         Regulasi <span className="text-sage">Baru.</span>
       </h2>
