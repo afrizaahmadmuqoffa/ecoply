@@ -1,14 +1,9 @@
 'use client'
 
 const words = [
-  'Compliance',
-  'Karbon',
-  'Sirkular',
-  'RegTech',
-  'AI',
-  'Scope 1–3',
-  'Daur Ulang',
-  'Transparansi',
+  'Compliance AI',
+  'Carbon Accounting',
+  'Circular Marketplace',
 ]
 
 const REPEATS = 6

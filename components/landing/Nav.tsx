@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { motion, useScroll, useSpring } from 'motion/react'
-import { ArrowRight, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import Magnetic from './Magnetic'
 import Logo from '@/components/Logo'
 
@@ -54,15 +54,6 @@ export default function Nav() {
               className="hidden text-sm font-semibold text-white/80 transition-colors hover:text-white sm:inline-block"
             >
               Masuk
-            </Link>
-          </Magnetic>
-          <Magnetic strength={0.2}>
-            <Link
-              href="/signup"
-              className="inline-flex items-center gap-1.5 rounded-full bg-sage px-4 py-2 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-sage-dark hover:shadow-[0_14px_28px_-8px_rgba(85,158,123,0.55)]"
-            >
-              Mulai
-              <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} />
             </Link>
           </Magnetic>
           <button

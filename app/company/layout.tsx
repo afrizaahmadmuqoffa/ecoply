@@ -33,6 +33,7 @@ export default async function CompanyLayout({
         />
       }
       userName={profile.full_name ?? profile.email ?? ''}
+      avatarColor="sage"
     >
       {children}
     </AppShell>

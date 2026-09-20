@@ -103,12 +103,12 @@ export default function Hero() {
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+          className="mt-10 flex w-full max-w-sm mx-auto flex-row items-stretch justify-center gap-3 sm:w-auto sm:max-w-none sm:gap-4"
         >
           <Magnetic>
             <Link
               href="/signup"
-              className="group inline-flex items-center gap-2 rounded-full bg-sage px-7 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-sage-dark hover:shadow-[0_22px_44px_-12px_rgba(85,158,123,0.6)]"
+              className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-sage px-4 py-3.5 font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-sage-dark hover:shadow-[0_22px_44px_-12px_rgba(85,158,123,0.6)] sm:flex-initial sm:px-7"
             >
               Mulai Gratis
               <ArrowRight
@@ -119,7 +119,7 @@ export default function Hero() {
           </Magnetic>
           <Link
             href="/login"
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-3.5 font-semibold text-white backdrop-blur transition-all hover:bg-white/10"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-3.5 font-semibold text-white backdrop-blur transition-all hover:bg-white/10 sm:flex-initial sm:px-7"
           >
             Masuk
           </Link>
@@ -127,7 +127,7 @@ export default function Hero() {
 
         {/* Pills kapabilitas */}
         <motion.ul
-          className="mt-14 flex flex-wrap items-center justify-center gap-3"
+          className="mt-14 flex flex-wrap items-center justify-center gap-2"
           initial="hidden"
           animate="show"
           variants={{
@@ -140,9 +140,9 @@ export default function Hero() {
             <motion.li
               key={cap.label}
               variants={pillVariants}
-              className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/5 px-4 py-2 text-xs font-medium text-white/70 backdrop-blur"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/5 px-2.5 py-1.5 text-[10px] font-medium text-white/70 backdrop-blur sm:gap-2 sm:px-3 sm:text-xs"
             >
-              <cap.icon className="h-3.5 w-3.5 text-sage" strokeWidth={2} />
+              <cap.icon className="h-3 w-3 text-sage sm:h-3.5 sm:w-3.5" strokeWidth={2} />
               {cap.label}
             </motion.li>
           ))}

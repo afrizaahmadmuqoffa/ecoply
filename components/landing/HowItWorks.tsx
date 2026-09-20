@@ -51,7 +51,7 @@ export default function HowItWorks() {
           />
         </div>
 
-        <div className="mt-0 grid gap-6 pt-0 sm:grid-cols-2 md:mt-8 md:grid-cols-4 md:gap-6">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 md:mt-8 md:grid-cols-4 md:gap-6">
           {steps.map((step, i) => (
             <Reveal key={step.n} delay={i * 0.12} className="h-full">
               <div className="group h-full rounded-[18px] border border-border bg-canvas p-6 transition-all duration-300 hover:-translate-y-1 hover:border-sage/40 hover:shadow-[0_18px_36px_-18px_rgba(11,31,22,0.16)]">

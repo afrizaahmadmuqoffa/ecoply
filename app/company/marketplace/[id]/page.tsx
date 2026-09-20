@@ -640,6 +640,43 @@ export default function ListingDetailPage({
 
         {/* Sidebar */}
         <aside className="lg:col-span-4 lg:sticky lg:top-6 space-y-4">
+          {/* Metadata card */}
+          <div className="bg-surface border border-border rounded-[18px] p-5 shadow-[0_8px_16px_-12px_rgba(11,31,22,0.06)]">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-8 h-8 rounded-lg bg-canvas text-muted flex items-center justify-center">
+                <BarChart3 className="w-4 h-4" strokeWidth={2} />
+              </span>
+              <h3 className="text-sm font-extrabold text-ink tracking-tight">Statistik</h3>
+            </div>
+
+            <dl className="space-y-2.5 text-xs">
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted">Dibuat</dt>
+                <dd className="text-ink font-bold">
+                  {new Date(listing.created_at).toLocaleDateString('id-ID', {
+                    day: 'numeric', month: 'long', year: 'numeric',
+                  })}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted">Total Bid</dt>
+                <dd className="text-ink font-extrabold tabular-nums">{bids.length}</dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted">Bid Pending</dt>
+                <dd className="text-ink font-extrabold tabular-nums">{pendingBids.length}</dd>
+              </div>
+              {acceptedBid && (
+                <div className="flex justify-between gap-3 pt-2.5 border-t border-border">
+                  <dt className="text-muted">Bid Diterima</dt>
+                  <dd className="text-sage-dark font-extrabold truncate">
+                    {acceptedBid.recyclers?.name || '1'}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </div>
+
           {/* Jadwal pickup */}
           {acceptedBid?.pickup_scheduled_at && (
             <div className="bg-surface border border-sage/30 rounded-[18px] p-5 shadow-[0_8px_16px_-12px_rgba(85,158,123,0.12)]">
@@ -684,43 +721,6 @@ export default function ListingDetailPage({
             refreshKey={refreshKey}
             initialData={initialFulfillment}
           />
-
-          {/* Metadata card */}
-          <div className="bg-surface border border-border rounded-[18px] p-5 shadow-[0_8px_16px_-12px_rgba(11,31,22,0.06)]">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-8 h-8 rounded-lg bg-canvas text-muted flex items-center justify-center">
-                <BarChart3 className="w-4 h-4" strokeWidth={2} />
-              </span>
-              <h3 className="text-sm font-extrabold text-ink tracking-tight">Statistik</h3>
-            </div>
-
-            <dl className="space-y-2.5 text-xs">
-              <div className="flex justify-between gap-3">
-                <dt className="text-muted">Dibuat</dt>
-                <dd className="text-ink font-bold">
-                  {new Date(listing.created_at).toLocaleDateString('id-ID', {
-                    day: 'numeric', month: 'long', year: 'numeric',
-                  })}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-muted">Total Bid</dt>
-                <dd className="text-ink font-extrabold tabular-nums">{bids.length}</dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-muted">Bid Pending</dt>
-                <dd className="text-ink font-extrabold tabular-nums">{pendingBids.length}</dd>
-              </div>
-              {acceptedBid && (
-                <div className="flex justify-between gap-3 pt-2.5 border-t border-border">
-                  <dt className="text-muted">Bid Diterima</dt>
-                  <dd className="text-sage-dark font-extrabold truncate">
-                    {acceptedBid.recyclers?.name || '1'}
-                  </dd>
-                </div>
-              )}
-            </dl>
-          </div>
 
           {/* Disclaimer */}
           <div className="bg-canvas border border-border rounded-[18px] p-4">

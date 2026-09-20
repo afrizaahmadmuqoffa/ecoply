@@ -6,8 +6,8 @@ import Eyebrow from "./Eyebrow";
 import Reveal from "./Reveal";
 
 const orbitDots = [
-  { top: -4, left: "50%", translate: "-50%", delay: 0 },
-  { top: "50%", left: -4, translate: "-50%", delay: 1 },
+  { top: 0, left: "50%", translate: "-50%", delay: 0 },
+  { top: "50%", left: 0, translate: "-50%", delay: 1 },
   { top: "50%", left: "100%", translate: "-50%", delay: 2 },
   { top: "100%", left: "50%", translate: "-50%", delay: 3 },
 ];

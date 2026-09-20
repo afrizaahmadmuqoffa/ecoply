@@ -258,27 +258,6 @@ export default async function RecyclerProfilePage({ params }: { params: Promise<
 
         {/* Sidebar */}
         <aside className="lg:col-span-4 lg:sticky lg:top-6 space-y-4">
-          {/* CTA */}
-          <div className="bg-gradient-to-br from-sage to-sage-dark rounded-[18px] p-5 text-white shadow-[0_12px_24px_-8px_rgba(85,158,123,0.4)] relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none -translate-y-1/2 translate-x-1/2" />
-            <div className="relative">
-              <span className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-3">
-                <Send className="w-5 h-5" strokeWidth={2} />
-              </span>
-              <h3 className="text-base font-extrabold tracking-tight mb-1">Tertarik bekerja sama?</h3>
-              <p className="text-xs text-white/80 mb-4 leading-relaxed">
-                Kirim request pickup untuk menawarkan limbah Anda ke recycler ini.
-              </p>
-              <Link
-                href="/company/marketplace/recyclers"
-                className="group inline-flex items-center justify-center gap-2 w-full bg-white text-sage-dark py-2.5 rounded-full text-xs font-bold tracking-wide hover:-translate-y-0.5 hover:shadow-lg transition-all"
-              >
-                <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
-                Kirim Request Pickup
-              </Link>
-            </div>
-          </div>
-
           {/* Info card */}
           <div className="bg-surface border border-border rounded-[18px] p-5 shadow-[0_8px_16px_-12px_rgba(11,31,22,0.06)]">
             <div className="flex items-center gap-2 mb-4">
@@ -310,6 +289,27 @@ export default async function RecyclerProfilePage({ params }: { params: Promise<
                 <dd className="text-ink font-extrabold tabular-nums">{details?.accepted_materials.length || 0}</dd>
               </div>
             </dl>
+          </div>
+
+          {/* CTA */}
+          <div className="bg-gradient-to-br from-sage to-sage-dark rounded-[18px] p-5 text-white shadow-[0_12px_24px_-8px_rgba(85,158,123,0.4)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none -translate-y-1/2 translate-x-1/2" />
+            <div className="relative">
+              <span className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center mb-3">
+                <Send className="w-5 h-5" strokeWidth={2} />
+              </span>
+              <h3 className="text-base font-extrabold tracking-tight mb-1">Tertarik bekerja sama?</h3>
+              <p className="text-xs text-white/80 mb-4 leading-relaxed">
+                Kirim request pickup untuk menawarkan limbah Anda ke recycler ini.
+              </p>
+              <Link
+                href="/company/marketplace/recyclers"
+                className="group inline-flex items-center justify-center gap-2 w-full bg-white text-sage-dark py-2.5 rounded-full text-xs font-bold tracking-wide hover:-translate-y-0.5 hover:shadow-lg transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
+                Kirim Request Pickup
+              </Link>
+            </div>
           </div>
 
           {/* Disclaimer */}

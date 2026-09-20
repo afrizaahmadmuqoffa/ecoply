@@ -8,6 +8,7 @@ type Props = {
   userName?: string
   children: ReactNode
   contentClassName?: string
+  avatarColor?: 'ink' | 'sage'
 }
 
 export default function AppShell({
@@ -15,6 +16,7 @@ export default function AppShell({
   userName,
   children,
   contentClassName = 'p-4 sm:p-6 lg:p-8',
+  avatarColor = 'ink',
 }: Props) {
   const [open, setOpen] = useState(false)
 
@@ -50,7 +52,7 @@ export default function AppShell({
           </button>
 
           {userName ? (
-            <span className="w-7 h-7 rounded-full bg-ink text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0 ring-2 ring-canvas">
+            <span className={`w-7 h-7 rounded-full ${avatarColor === 'sage' ? 'bg-sage' : 'bg-ink'} text-white flex items-center justify-center font-bold text-[10px] flex-shrink-0 ring-2 ring-canvas`}>
               {(userName.trim().charAt(0) || '?').toUpperCase()}
             </span>
           ) : (

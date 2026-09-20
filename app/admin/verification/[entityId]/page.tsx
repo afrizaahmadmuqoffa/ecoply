@@ -352,27 +352,6 @@ export default async function EntityDetailPage({
 
         {/* Sidebar */}
         <aside className="lg:col-span-4 lg:sticky lg:top-6 space-y-4">
-          {/* Tindakan verifikasi */}
-          <div className="bg-surface border border-border rounded-[18px] p-5 shadow-[0_8px_16px_-12px_rgba(11,31,22,0.06)]">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="w-8 h-8 rounded-lg bg-canvas text-muted flex items-center justify-center">
-                  <ShieldCheck className="w-4 h-4" strokeWidth={2} />
-                </span>
-                <h3 className="text-sm font-extrabold text-ink tracking-tight">Tindakan Verifikasi</h3>
-              </div>
-              <StatusPill status={status} />
-            </div>
-            {request && (
-              <EntityActions
-                requestId={request.id}
-                entityId={entityId}
-                entityType={request.entity_type === 'company' ? 'company' : 'recycler'}
-                reviewable={request.status === 'pending'}
-              />
-            )}
-          </div>
-
           {/* Statistik */}
           <div className="bg-surface border border-border rounded-[18px] p-5 shadow-[0_8px_16px_-12px_rgba(11,31,22,0.06)]">
             <div className="flex items-center gap-2 mb-4">
@@ -404,6 +383,27 @@ export default async function EntityDetailPage({
                 </div>
               )}
             </dl>
+          </div>
+
+          {/* Tindakan verifikasi */}
+          <div className="bg-surface border border-border rounded-[18px] p-5 shadow-[0_8px_16px_-12px_rgba(11,31,22,0.06)]">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="w-8 h-8 rounded-lg bg-canvas text-muted flex items-center justify-center">
+                  <ShieldCheck className="w-4 h-4" strokeWidth={2} />
+                </span>
+                <h3 className="text-sm font-extrabold text-ink tracking-tight">Tindakan Verifikasi</h3>
+              </div>
+              <StatusPill status={status} />
+            </div>
+            {request && (
+              <EntityActions
+                requestId={request.id}
+                entityId={entityId}
+                entityType={request.entity_type === 'company' ? 'company' : 'recycler'}
+                reviewable={request.status === 'pending'}
+              />
+            )}
           </div>
 
           {/* Disclaimer */}

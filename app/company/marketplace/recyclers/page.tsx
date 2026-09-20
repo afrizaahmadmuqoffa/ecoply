@@ -647,34 +647,6 @@ export default function CompanyRecyclersPage() {
                 <p className="text-xs text-muted mt-1.5 max-w-sm mx-auto mb-6">
                   Kami belum menemukan recycler dalam jangkauan layanan perusahaan Anda.
                 </p>
-                <div className="max-w-sm mx-auto bg-canvas border border-border rounded-2xl p-5 text-left mb-6">
-                  <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted mb-3">Langkah selanjutnya</p>
-                  <ul className="space-y-2.5">
-                    <li className="flex items-start gap-2.5 text-xs text-ink">
-                      <span className="w-5 h-5 rounded-full bg-mint text-sage-dark flex items-center justify-center flex-shrink-0">
-                        <Check className="w-3 h-3" strokeWidth={3} />
-                      </span>
-                      <span>
-                        Pastikan <strong>alamat perusahaan</strong> sudah diisi dengan benar di profil
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2.5 text-xs text-ink">
-                      <span className="w-5 h-5 rounded-full bg-mint text-sage-dark flex items-center justify-center flex-shrink-0">
-                        <Check className="w-3 h-3" strokeWidth={3} />
-                      </span>
-                      <span>
-                        Pastikan profil <strong>aktif dan terverifikasi</strong> agar tampil di daftar
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <Link
-                  href="/company/profile"
-                  className="group inline-flex items-center gap-2 px-5 py-2.5 bg-sage hover:bg-sage-dark text-white text-sm font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-8px_rgba(85,158,123,0.4)]"
-                >
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" strokeWidth={2.5} />
-                  Perbarui Profil Perusahaan
-                </Link>
               </>
             )}
           </div>

@@ -207,7 +207,7 @@ export default function ChunkPreviewModal({
         </div>
 
         {/* Editable textarea */}
-        <div className="flex-1 flex flex-col p-4 min-h-0">
+        <div className="flex-1 flex flex-col p-3 sm:p-4 min-h-0">
           <div className="flex items-center justify-between mb-2">
             <p className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted">
               Edit Teks Chunk
@@ -271,7 +271,7 @@ export default function ChunkPreviewModal({
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-hidden flex flex-col px-3 sm:px-6 py-4 sm:py-5 min-h-0">
+        <div className="flex-1 overflow-y-auto md:overflow-hidden flex flex-col px-3 sm:px-6 py-4 sm:py-5 min-h-0">
 
           {/* IDLE state */}
           {state === 'idle' && (
@@ -468,14 +468,6 @@ export default function ChunkPreviewModal({
 
                 {/* Mobile: chunk dropdown */}
                 <div className="md:hidden flex-shrink-0">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted">
-                      Pilih Chunk
-                    </span>
-                    <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-muted">
-                      {filteredChunks.length}
-                    </span>
-                  </div>
                   <div className="relative">
                     <select
                       value={selectedIndex ?? ''}
@@ -503,7 +495,7 @@ export default function ChunkPreviewModal({
                 </div>
 
                 {/* Detail / Edit panel */}
-                <div className="flex-1 flex flex-col min-h-0 border border-border rounded-xl overflow-hidden">
+                <div className="flex-1 flex flex-col min-h-[45vh] md:min-h-0 border border-border rounded-xl overflow-hidden">
                   {renderEditor()}
                 </div>
               </div>

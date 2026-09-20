@@ -9,7 +9,7 @@
 --
 -- Query bantu untuk menemukan duplikat:
 --   SELECT nib, count(*) FROM public.companies
---     WHERE nib IS NOT NULL AND nib <> '' GROUP BY nib HAVING count(*) > 1;
+--     WHERE nib IS NOT NULL AND  nib <> '' GROUP BY nib HAVING count(*) > 1;
 --   SELECT nib, count(*) FROM public.recyclers
 --     WHERE nib IS NOT NULL AND nib <> '' GROUP BY nib HAVING count(*) > 1;
 -- ============================================================
