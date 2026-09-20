@@ -4,13 +4,15 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { signIn } from '@/lib/supabase/actions/auth'
 import type { SignInInput } from '@/lib/validators/auth'
-import { AlertTriangle, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { AlertTriangle, Loader2, ArrowRight, Eye, EyeOff, KeyRound } from 'lucide-react'
+import DemoAccountsModal from '@/components/auth/DemoAccountsModal'
 
 export default function LoginPage() {
   const [form, setForm] = useState<SignInInput>({ email: '', password: '' })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [showDemo, setShowDemo] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -58,9 +60,6 @@ export default function LoginPage() {
             <label htmlFor="password" className="block text-xs font-semibold text-ink uppercase tracking-wider">
               Password
             </label>
-            <a href="#" className="text-xs text-sage-dark hover:underline font-medium">
-              Lupa password?
-            </a>
           </div>
           <div className="relative">
             <input
@@ -110,7 +109,20 @@ export default function LoginPage() {
         </button>
       </form>
 
+      <DemoAccountsModal isOpen={showDemo} onClose={() => setShowDemo(false)} />
+
       <div className="mt-8 pt-6 border-t border-border text-center">
+        <button
+          type="button"
+          onClick={() => setShowDemo(true)}
+          className="group inline-flex items-center gap-2 text-sm font-semibold cursor-pointer text-sage-dark hover:text-sage transition-colors"
+        >
+          <KeyRound className="w-4 h-4 group-hover:-rotate-12 transition-transform" strokeWidth={2} />
+          Juri? Lihat akun demo
+        </button>
+      </div>
+
+      <div className="mt-5 text-center">
         <p className="text-sm text-muted">
           Belum punya akun?{' '}
           <Link href="/signup" className="text-ink hover:text-sage-dark font-semibold underline-offset-4 hover:underline">

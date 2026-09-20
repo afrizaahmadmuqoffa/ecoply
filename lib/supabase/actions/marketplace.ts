@@ -186,7 +186,10 @@ export async function getRecyclerListings() {
       p_lat: lat,
       p_lng: lng,
       p_radius_km: radiusKm,
-      p_accepted_materials: acceptedMaterials.length > 0 ? acceptedMaterials : null,
+      // Selalu kirim array (bukan null): array kosong → RPC tidak
+      // menghasilkan listing, sehingga recycler yang belum memilih
+      // material diterima tidak melihat SEMUA listing limbah.
+      p_accepted_materials: acceptedMaterials,
       p_recycler_id: profile.recycler_id,  // ✅ Tambah parameter baru
     },
   )
@@ -205,6 +208,7 @@ export async function getRecyclerListings() {
       is_active: details.is_active,
       accepted_materials_count: acceptedMaterials.length,
     },
+    needsAcceptedMaterials: acceptedMaterials.length === 0,
   }
 }
 
@@ -606,6 +610,34 @@ export async function getListingDetailForRecycler(listingId: string) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const row = listingRow as any
+
+  // Fetch konteks recycler: material yang diterima + bid milik recycler
+  // (paralel, sebelum gate material).
+  const [recyclerDetails, myBid] = await Promise.all([
+    supabase
+      .from('recycler_details')
+      .select('accepted_materials')
+      .eq('recycler_id', profile.recycler_id)
+      .maybeSingle(),
+    supabase
+      .from('marketplace_bids')
+      .select('*')
+      .eq('listing_id', listingId)
+      .eq('recycler_id', profile.recycler_id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ])
+
+  // Gate: hanya listing dengan material yang diterima recycler yang boleh
+  // dibuka. Recycler yang sudah punya bid di listing ini tetap bisa membukanya
+  // (mis. sedang negosiasi), agar tidak mengunci akses alur yang sudah berjalan.
+  const acceptedMaterials = (recyclerDetails?.data?.accepted_materials || []) as string[]
+  const materialKey = `${row.category ?? ''}:${row.material_type ?? ''}`
+  if (!acceptedMaterials.includes(materialKey) && !myBid.data) {
+    return { error: 'Listing tidak tersedia untuk fasilitas Anda' }
+  }
+
   let companyInfo: { id: string; name: string; logo_url: string | null } | null = null
   if (row.company_id) {
     const { data: company } = await supabase
@@ -618,17 +650,7 @@ export async function getListingDetailForRecycler(listingId: string) {
   }
   const listing = { ...row, companies: companyInfo }
 
-  // Fetch bid milik recycler ini untuk listing terkait (ambil yang terbaru)
-  const { data: myBid } = await supabase
-    .from('marketplace_bids')
-    .select('*')
-    .eq('listing_id', listingId)
-    .eq('recycler_id', profile.recycler_id)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
-
-  return { data: { listing, myBid } }
+  return { data: { listing, myBid: myBid.data } }
 }
 
 // ============================================

@@ -19,6 +19,7 @@ import {
   Inbox,
   MapPin,
   MessageCircle,
+  Recycle,
   Scale,
   Search,
   Wrench,
@@ -125,6 +126,29 @@ function ProfileSetupCTA() {
   )
 }
 
+function MaterialSetupCTA() {
+  return (
+    <div className="bg-surface border border-amber-200 rounded-[22px] p-10 text-center shadow-[0_12px_24px_-16px_rgba(11,31,22,0.08)]">
+      <div className="w-20 h-20 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto mb-5">
+        <Recycle className="w-9 h-9 text-amber-700" strokeWidth={1.8} />
+      </div>
+      <h2 className="text-base font-extrabold text-ink tracking-tight mb-2">
+        Pilih Jenis Material Diterima
+      </h2>
+      <p className="text-xs text-muted mb-6 max-w-md mx-auto leading-relaxed">
+        Untuk melihat listing limbah yang relevan, pilih minimal 1 jenis material yang diterima fasilitas Anda di halaman profil.
+      </p>
+      <Link
+        href="/recycler/profile"
+        className="group inline-flex items-center gap-2 px-5 py-2.5 bg-sage hover:bg-sage-dark text-white text-sm font-semibold rounded-full transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-8px_rgba(85,158,123,0.4)]"
+      >
+        <Recycle className="w-4 h-4" strokeWidth={2} />
+        Pilih Material Diterima
+      </Link>
+    </div>
+  )
+}
+
 function ListingCard({ listing }: { listing: WasteListing }) {
   const hasActiveBid = listing.my_bid_status === 'accepted'
   const hasPendingBid = listing.my_bid_status === 'pending'
@@ -210,10 +234,10 @@ function ListingCard({ listing }: { listing: WasteListing }) {
               )}
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              {hasActiveBid && (
+              {hasActiveBid && listing.status !== 'completed' && (
                 <Link
                   href={`/recycler/marketplace/${listing.id}/chat`}
-                  className="group inline-flex items-center gap-1 px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white text-[11px] font-bold rounded-full transition-all hover:-translate-y-0.5"
+                  className="group inline-flex items-center gap-1 px-3 py-1.5 bg-sage hover:bg-sage-dark text-white text-[11px] font-bold rounded-full transition-all hover:-translate-y-0.5"
                 >
                   <MessageCircle className="w-3 h-3" strokeWidth={2} />
                   Chat
@@ -247,7 +271,7 @@ function ListingsFeed({
   filterInfo: FilterInfo
 }) {
   const [materialFilter, setMaterialFilter] = useState("")
-  const [statusFilter, setStatusFilter] = useState<ListingStatus | "">("open")
+  const [statusFilter, setStatusFilter] = useState<ListingStatus | "">("")
   const [freeOnly, setFreeOnly] = useState(false)
 
   const filteredListings = listings.filter((listing) => {
@@ -399,6 +423,7 @@ export default function RecyclerMarketplacePage() {
   const [listings, setListings] = useState<WasteListing[]>([])
   const [filterInfo, setFilterInfo] = useState<FilterInfo | null>(null)
   const [needsProfileSetup, setNeedsProfileSetup] = useState(false)
+  const [needsAcceptedMaterials, setNeedsAcceptedMaterials] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -411,6 +436,12 @@ export default function RecyclerMarketplacePage() {
 
       if (result.needsProfileSetup) {
         setNeedsProfileSetup(true)
+        setLoading(false)
+        return
+      }
+
+      if (result.needsAcceptedMaterials) {
+        setNeedsAcceptedMaterials(true)
         setLoading(false)
         return
       }
@@ -482,6 +513,8 @@ export default function RecyclerMarketplacePage() {
         </div>
       ) : needsProfileSetup ? (
         <ProfileSetupCTA />
+      ) : needsAcceptedMaterials ? (
+        <MaterialSetupCTA />
       ) : (
         <>
           {filterInfo && (

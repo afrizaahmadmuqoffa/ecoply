@@ -104,7 +104,7 @@ export default function AdminSidebar({ userName, onNavigate }: Props) {
         <form action={signOut}>
           <button
             type="submit"
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-border text-xs font-semibold text-muted hover:border-sage hover:text-red- hover:bg-canvas transition-all"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-border text-xs font-semibold text-muted hover:border-red-700 hover:text-red-700 hover:bg-canvas transition-all"
           >
             <LogOut className="w-3.5 h-3.5" strokeWidth={2} />
             Keluar

@@ -30,22 +30,34 @@ export default function RecyclerRequestsPage() {
 
   return (
     <div>
-      <Link
-        href="/recycler/marketplace"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted hover:text-sage-dark transition-colors mb-5"
-      >
-        <ChevronLeft className="w-3.5 h-3.5" strokeWidth={2.5} />
-        Marketplace
-      </Link>
+      {loading ? (
+        <div className="animate-fade-in">
+          <Skeleton className="h-3.5 w-24 mb-5 rounded-full" />
+          <div className="mb-6">
+            <Skeleton className="h-9 sm:h-10 w-2/3 max-w-sm" />
+            <Skeleton className="h-4 w-full max-w-xl mt-3" />
+          </div>
+        </div>
+      ) : (
+        <>
+          <Link
+            href="/recycler/marketplace"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted hover:text-sage-dark transition-colors mb-5"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" strokeWidth={2.5} />
+            Marketplace
+          </Link>
 
-      <div className="mb-6">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-ink tracking-tight leading-[1.08]">
-          Permintaan <span className="text-sage">Pickup.</span>
-        </h1>
-        <p className="mt-3 text-sm text-muted max-w-2xl">
-          Daftar permintaan pengangkutan limbah dari perusahaan. Terima untuk mulai negosiasi & berdiskusi via chat.
-        </p>
-      </div>
+          <div className="mb-6">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-ink tracking-tight leading-[1.08]">
+              Permintaan <span className="text-sage">Pickup.</span>
+            </h1>
+            <p className="mt-3 text-sm text-muted max-w-2xl">
+              Daftar permintaan pengangkutan limbah dari perusahaan. Terima untuk mulai negosiasi & berdiskusi via chat.
+            </p>
+          </div>
+        </>
+      )}
 
       {loading ? (
         <div className="space-y-4 animate-fade-in">

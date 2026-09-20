@@ -176,7 +176,7 @@ function ListingCard({ listing }: { listing: WasteListing }) {
             {isDealing && (
               <Link
                 href={`/company/marketplace/${listing.id}/chat`}
-                className="inline-flex items-center gap-1 px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white text-[11px] font-bold rounded-full transition-all hover:-translate-y-0.5"
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-sage hover:bg-sage-dark text-white text-[11px] font-bold rounded-full transition-all hover:-translate-y-0.5"
               >
                 <MessageCircle className="w-3 h-3" strokeWidth={2} />
                 Chat
@@ -771,7 +771,7 @@ function ListingsSection({ listings }: { listings: WasteListing[] }) {
   const [filters, setFilters] = useState<{
     status: WasteListingStatus | ""
     material: string
-  }>({ status: "open", material: "" })
+  }>({ status: "", material: "" })
 
   const filteredListings = listings.filter((listing) => {
     if (filters.status && listing.status !== filters.status) return false
