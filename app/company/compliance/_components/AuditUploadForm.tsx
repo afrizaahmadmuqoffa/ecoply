@@ -57,36 +57,70 @@ export default function AuditUploadForm() {
     setDuplicate(null)
     setStage('uploading')
 
-    const formData = new FormData()
-    formData.append('document', file)
-
     const stageTimer = setTimeout(() => setStage('extracting'), 2000)
     const stageTimer2 = setTimeout(() => setStage('analyzing'), 5000)
 
-    const result = await submitAuditJob(formData, { forceRerun })
+    try {
+      const { signedUrl, path } = await prepareUpload(file)
 
-    clearTimeout(stageTimer)
-    clearTimeout(stageTimer2)
+      const putRes = await fetch(signedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type || 'application/octet-stream' },
+        body: file,
+      })
+      if (!putRes.ok) {
+        throw new Error('Gagal mengunggah dokumen ke penyimpanan. Coba lagi.')
+      }
 
-    if (result.error) {
-      setErrorMsg(result.error)
-      toast.error(result.error)
+      const result = await submitAuditJob({ path, fileName: file.name }, { forceRerun })
+
+      if (result.error) {
+        setErrorMsg(result.error)
+        toast.error(result.error)
+        setStage('error')
+      } else if (result.duplicate) {
+        setDuplicate(result.duplicate)
+        setStage('idle')
+      } else if (result.jobId) {
+        // Same file is already being processed/queued — navigate immediately
+        // instead of showing the "done" banner which would be misleading.
+        toast.success('Audit dimulai')
+        router.push(`/company/compliance/${result.jobId}`)
+      } else {
+        setStage('done')
+        toast.success('Audit berhasil dibuat')
+        setTimeout(() => {
+          router.push('/company/compliance')
+        }, 1500)
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Terjadi kesalahan. Coba lagi.'
+      setErrorMsg(message)
+      toast.error(message)
       setStage('error')
-    } else if (result.duplicate) {
-      setDuplicate(result.duplicate)
-      setStage('idle')
-    } else if (result.jobId) {
-      // Same file is already being processed/queued — navigate immediately
-      // instead of showing the "done" banner which would be misleading.
-      toast.success('Audit dimulai')
-      router.push(`/company/compliance/${result.jobId}`)
-    } else {
-      setStage('done')
-      toast.success('Audit berhasil dibuat')
-      setTimeout(() => {
-        router.push('/company/compliance')
-      }, 1500)
+    } finally {
+      clearTimeout(stageTimer)
+      clearTimeout(stageTimer2)
     }
+  }
+
+  async function prepareUpload(file: File): Promise<{ signedUrl: string; path: string }> {
+    let res: Response
+    try {
+      res = await fetch('/api/compliance/presign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: file.name, fileSize: file.size }),
+      })
+    } catch {
+      throw new Error('Koneksi bermasalah saat menyiapkan upload. Coba lagi.')
+    }
+
+    const body = await res.json().catch(() => null)
+    if (!res.ok || !body?.signedUrl || !body?.path) {
+      throw new Error(body?.error ?? 'Gagal menyiapkan upload dokumen. Coba lagi.')
+    }
+    return { signedUrl: body.signedUrl, path: body.path }
   }
 
   function formatSize(bytes: number) {

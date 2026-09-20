@@ -309,14 +309,30 @@ function chunkDocumentPages(
  * Pass `{ forceRerun: true }` to bypass the dedup and run a fresh audit.
  */
 export async function submitAuditJob(
-  formData: FormData,
+  input: { path: string; fileName: string },
   options?: { forceRerun?: boolean },
 ): Promise<ActionResult> {
+  const storagePath = input.path;
+  const fileName = input.fileName;
+
+  const admin = createAdminClient();
+
+  const cleanupFile = async () => {
+    try {
+      await admin.storage.from("company-docs").remove([storagePath]);
+    } catch {
+      // best effort; the blob only leaks if this also fails
+    }
+  };
+
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Tidak terautentikasi" };
+  if (!user) {
+    await cleanupFile();
+    return { error: "Tidak terautentikasi" };
+  }
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -325,21 +341,37 @@ export async function submitAuditJob(
     .single();
 
   if (!profile || profile.role !== "company" || !profile.company_id) {
+    await cleanupFile();
     return { error: "Akun tidak terkait dengan perusahaan" };
   }
 
-  const file = formData.get("document") as File | null;
-  if (!file || file.size === 0) return { error: "Pilih dokumen untuk diaudit" };
-  if (file.size > 50 * 1024 * 1024)
-    return { error: "Ukuran file maksimal 50 MB" };
-
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
   if (!["pdf", "doc", "docx", "txt"].includes(ext)) {
+    await cleanupFile();
     return { error: "Format tidak didukung. Gunakan PDF, Word, atau TXT." };
   }
 
-  const admin = createAdminClient();
-  const documentHash = computeDocumentHash(await file.arrayBuffer());
+  const { data: blob, error: downloadError } = await admin.storage
+    .from("company-docs")
+    .download(storagePath);
+  if (downloadError || !blob) {
+    await cleanupFile();
+    return {
+      error: "Dokumen tidak ditemukan di penyimpanan. Coba upload ulang.",
+    };
+  }
+
+  const buffer = await blob.arrayBuffer();
+  if (buffer.byteLength === 0) {
+    await cleanupFile();
+    return { error: "Pilih dokumen untuk diaudit" };
+  }
+  if (buffer.byteLength > 50 * 1024 * 1024) {
+    await cleanupFile();
+    return { error: "Ukuran file maksimal 50 MB" };
+  }
+
+  const documentHash = computeDocumentHash(buffer);
 
   // 0. Dedup check — identical bytes + same model already audited?
   //    Skip upload + Gemini entirely; let the client show a re-audit warning.
@@ -356,6 +388,7 @@ export async function submitAuditJob(
 
     if (existing) {
       if (existing.status === "done") {
+        await cleanupFile();
         return {
           duplicate: {
             jobId: existing.id,
@@ -365,17 +398,11 @@ export async function submitAuditJob(
         };
       }
       if (existing.status === "queued" || existing.status === "processing") {
+        await cleanupFile();
         return { jobId: existing.id };
       }
     }
   }
-
-  // 1. Upload file
-  const storagePath = `${user.id}/${Date.now()}_${file.name}`;
-  const { error: uploadError } = await supabase.storage
-    .from("company-docs")
-    .upload(storagePath, file, { contentType: file.type, upsert: false });
-  if (uploadError) return { error: `Upload gagal: ${uploadError.message}` };
 
   // 2. Create job
   const { data: job, error: jobError } = await admin
@@ -383,9 +410,9 @@ export async function submitAuditJob(
     .insert({
       company_id: profile.company_id,
       submitted_by: user.id,
-      document_name: file.name,
+      document_name: fileName,
       document_path: storagePath,
-      file_size: file.size,
+      file_size: buffer.byteLength,
       document_hash: documentHash,
       model_version: MODEL_VERSION,
       status: "processing",
@@ -393,12 +420,14 @@ export async function submitAuditJob(
     })
     .select("id")
     .single();
-  if (jobError) return { error: jobError.message };
+  if (jobError) {
+    await cleanupFile();
+    return { error: jobError.message };
+  }
 
   try {
     // 3. Extract pages + validate
-    const buffer = await file.arrayBuffer();
-    const pages = await extractPagesFromBuffer(buffer, file.name);
+    const pages = await extractPagesFromBuffer(buffer, fileName);
 
     if (pages.length === 0) {
       await admin
@@ -409,6 +438,7 @@ export async function submitAuditJob(
           completed_at: new Date().toISOString(),
         })
         .eq("id", job.id);
+      await cleanupFile();
       return {
         error:
           "Tidak dapat membaca teks dari dokumen. Pastikan dokumen tidak terproteksi.",
@@ -425,6 +455,7 @@ export async function submitAuditJob(
           completed_at: new Date().toISOString(),
         })
         .eq("id", job.id);
+      await cleanupFile();
       return {
         error: "Dokumen kosong atau terlalu pendek untuk dianalisis.",
       };
@@ -787,6 +818,7 @@ export async function submitAuditJob(
         completed_at: new Date().toISOString(),
       })
       .eq("id", job.id);
+    await cleanupFile();
     return { error: friendly };
   }
 

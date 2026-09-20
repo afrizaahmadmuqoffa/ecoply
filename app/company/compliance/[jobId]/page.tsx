@@ -13,6 +13,7 @@ import ActionItemList from "./_components/ActionItemList"
 import EvidenceSourcePanel, {
   type AreaSource,
 } from "./_components/EvidenceSourcePanel"
+import StatusPoller from "../_components/StatusPoller"
 
 type RegulationCited = {
   id: string;
@@ -110,20 +111,12 @@ export default async function AuditReportPage({
     supabase.from("audit_reports").select("*").eq("job_id", jobId).single(),
   ])
 
-  if (!report) {
-    throw new Error("Audit report tidak ditemukan.")
-  }
-
-  const { data: actionItemRows } = await supabase
-    .from("audit_action_items")
-    .select("id, item_index, task, completed, completed_at")
-    .eq("report_id", report.id)
-    .order("item_index")
-
   if (!job) notFound()
-  if (!report || job.status !== "done") {
+
+  if (job.status !== "done" || !report) {
     return (
       <div>
+        <StatusPoller status={job.status} />
         <Link
           href="/company/compliance"
           className="group inline-flex items-center gap-1.5 text-xs font-semibold text-muted hover:text-sage-dark mb-6 transition-colors"
@@ -146,6 +139,12 @@ export default async function AuditReportPage({
       </div>
     )
   }
+
+  const { data: actionItemRows } = await supabase
+    .from("audit_action_items")
+    .select("id, item_index, task, completed, completed_at")
+    .eq("report_id", report.id)
+    .order("item_index")
 
   const findings = report.findings as AuditFinding[]
   const recommendations = report.recommendations as AuditRecommendation[]

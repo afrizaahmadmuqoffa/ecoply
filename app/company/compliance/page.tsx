@@ -4,6 +4,8 @@ import { AlertTriangle } from 'lucide-react'
 import AuditUploadForm from './_components/AuditUploadForm'
 import AuditJobList from './_components/AuditJobList'
 
+export const maxDuration = 300
+
 export default async function CompanyCompliancePage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
