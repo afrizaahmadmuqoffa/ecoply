@@ -53,7 +53,7 @@ export default function Nav() {
               href="/login"
               className="hidden text-sm font-semibold text-white/80 transition-colors hover:text-white sm:inline-block"
             >
-              Masuk
+              Login
             </Link>
           </Magnetic>
           <button
@@ -88,7 +88,7 @@ export default function Nav() {
             onClick={() => setMenuOpen(false)}
             className="text-sm font-semibold text-white/60 transition-colors hover:text-white py-1 sm:hidden"
           >
-            Masuk
+            Login
           </Link>
         </nav>
       </div>

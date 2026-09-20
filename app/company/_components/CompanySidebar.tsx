@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { signOut } from '@/lib/supabase/actions/auth'
 import Logo from '@/components/Logo'
 import type { VerificationStatus } from '@/types/roles'
-import { BadgeCheck, CheckCircle2, ChevronRight, Clock, Globe, Info, LayoutDashboard, LogOut, ShoppingBag } from 'lucide-react'
+import { ClipboardCheck, CheckCircle2, ChevronRight, Clock, CloudFog, Info, LayoutDashboard, LogOut, Recycle } from 'lucide-react'
 
 const navItems = [
   {
@@ -16,17 +16,17 @@ const navItems = [
   {
     href: '/company/compliance',
     label: 'Compliance AI',
-    icon: <BadgeCheck className="w-4 h-4" strokeWidth={1.8} />,
+    icon: <ClipboardCheck className="w-4 h-4" strokeWidth={1.8} />,
   },
   {
     href: '/company/carbon',
     label: 'Carbon Accounting',
-    icon: <Globe className="w-4 h-4" strokeWidth={1.8} />,
+    icon: <CloudFog className="w-4 h-4" strokeWidth={1.8} />,
   },
   {
     href: '/company/marketplace',
     label: 'Marketplace',
-    icon: <ShoppingBag className="w-4 h-4" strokeWidth={1.8} />,
+    icon: <Recycle className="w-4 h-4" strokeWidth={1.8} />,
   },
 ]
 

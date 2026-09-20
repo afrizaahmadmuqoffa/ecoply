@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Check, ClipboardCheck, Leaf, Recycle } from 'lucide-react'
+import { Check, ClipboardCheck, CloudFog, Recycle } from 'lucide-react'
 import Eyebrow from './Eyebrow'
 import Reveal from './Reveal'
 
@@ -17,7 +17,7 @@ const features = [
     ],
   },
   {
-    icon: Leaf,
+    icon: CloudFog,
     title: 'Carbon Accounting',
     desc: 'Kalkulasi emisi Scope 1, 2, dan 3 dengan pendekatan yang konsisten dan terdokumentasi.',
     points: [

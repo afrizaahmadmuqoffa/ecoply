@@ -8,8 +8,8 @@ const platformLinks = [
 ]
 
 const accountLinks = [
-  { href: '/login', label: 'Masuk' },
-  { href: '/signup', label: 'Daftar' },
+  { href: '/login', label: 'Login' },
+  { href: '/signup', label: 'Signup' },
 ]
 
 export default function Footer() {

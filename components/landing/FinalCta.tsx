@@ -55,7 +55,7 @@ export default function FinalCta() {
                   href="/login"
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-3.5 font-semibold text-white backdrop-blur transition-all hover:bg-white/10 sm:flex-initial sm:px-7"
                 >
-                  Masuk
+                  Login
                 </Link>
               </div>
             </div>

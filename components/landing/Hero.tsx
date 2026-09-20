@@ -5,14 +5,14 @@ import { motion } from 'motion/react'
 import {
   ArrowRight,
   ClipboardCheck,
-  Leaf,
+  CloudFog,
   Recycle,
 } from 'lucide-react'
 import Magnetic from './Magnetic'
 
 const capabilities = [
   { icon: ClipboardCheck, label: 'Compliance AI' },
-  { icon: Leaf, label: 'Carbon Accounting' },
+  { icon: CloudFog, label: 'Carbon Accounting' },
   { icon: Recycle, label: 'Circular Marketplace' },
 ]
 
@@ -117,12 +117,6 @@ export default function Hero() {
               />
             </Link>
           </Magnetic>
-          <Link
-            href="/login"
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-3.5 font-semibold text-white backdrop-blur transition-all hover:bg-white/10 sm:flex-initial sm:px-7"
-          >
-            Masuk
-          </Link>
         </motion.div>
 
         {/* Pills kapabilitas */}

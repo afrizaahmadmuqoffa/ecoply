@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { signOut } from '@/lib/supabase/actions/auth'
 import Logo from '@/components/Logo'
 import type { VerificationStatus } from '@/types/roles'
-import { CheckCircle2, ChevronRight, Clock, Info, LayoutDashboard, LogOut, ShoppingBag } from 'lucide-react'
+import { CheckCircle2, ChevronRight, Clock, Info, LayoutDashboard, LogOut, Recycle } from 'lucide-react'
 
 const navItems = [
   {
@@ -16,7 +16,7 @@ const navItems = [
   {
     href: '/recycler/marketplace',
     label: 'Marketplace',
-    icon: <ShoppingBag className="w-4 h-4" strokeWidth={1.8} />,
+    icon: <Recycle className="w-4 h-4" strokeWidth={1.8} />,
   },
 ]
 
