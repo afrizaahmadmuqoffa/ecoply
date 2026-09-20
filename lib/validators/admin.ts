@@ -31,7 +31,7 @@ export type BulkVerifyEntitiesInput = z.infer<typeof bulkVerifyEntitiesSchema>
 export const createRegulationSchema = z.object({
   title: z.string().min(3, 'Judul minimal 3 karakter').max(200),
   description: z.string().max(1000).optional(),
-  category: z.enum(['OJK', 'KLHK', 'BPJS', 'ISO', 'GRI', 'TCFD', 'ISSB', 'Lainnya']),
+  category: z.enum(['OJK', 'KLHK', 'ESDM', 'Kemenaker', 'Kemenperin', 'UU/PP', 'Perda', 'ISO', 'SNI', 'GRI', 'TCFD', 'ISSB', 'Lainnya']),
   version: z.string().min(1).max(20).default('1.0'),
 })
 

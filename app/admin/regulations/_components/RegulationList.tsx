@@ -42,11 +42,16 @@ function formatBytes(bytes: number | null) {
 const categoryColor: Record<string, { bg: string; text: string; border: string }> = {
   OJK: { bg: 'bg-mint/60', text: 'text-sage-dark', border: 'border-sage/30' },
   KLHK: { bg: 'bg-mint', text: 'text-sage-dark', border: 'border-sage/40' },
+  ESDM: { bg: 'bg-orange-50', text: 'text-orange-800', border: 'border-orange-200' },
+  Kemenaker: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' },
+  Kemenperin: { bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200' },
+  'UU/PP': { bg: 'bg-ink/10', text: 'text-ink', border: 'border-ink/20' },
+  Perda: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200' },
   ISO: { bg: 'bg-ink/10', text: 'text-ink', border: 'border-ink/20' },
+  SNI: { bg: 'bg-cyan-50', text: 'text-cyan-800', border: 'border-cyan-200' },
   GRI: { bg: 'bg-amber-50', text: 'text-amber-800', border: 'border-amber-200' },
   TCFD: { bg: 'bg-sage/15', text: 'text-sage-dark', border: 'border-sage/30' },
   ISSB: { bg: 'bg-canvas', text: 'text-ink', border: 'border-border' },
-  BPJS: { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' },
   Lainnya: { bg: 'bg-canvas', text: 'text-muted', border: 'border-border' },
 }
 

@@ -6,7 +6,7 @@ import { AlertTriangle, ArrowRight, Check, FileText, Loader2, Upload, X } from '
 import { createRegulation } from '@/lib/supabase/actions/admin'
 import type { CreateRegulationInput } from '@/lib/validators/admin'
 
-const CATEGORIES = ['OJK', 'KLHK', 'BPJS', 'ISO', 'GRI', 'TCFD', 'ISSB', 'Lainnya'] as const
+const CATEGORIES = ['OJK', 'KLHK', 'ESDM', 'Kemenaker', 'Kemenperin', 'UU/PP', 'Perda', 'ISO', 'SNI', 'GRI', 'TCFD', 'ISSB', 'Lainnya'] as const
 
 export default function RegulationForm() {
   const fileRef = useRef<HTMLInputElement>(null)
